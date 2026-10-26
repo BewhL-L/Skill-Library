@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "如果您在学术工作中使用了本项目，请引用以下文献。"
+title: "Obsidian 知识库标准化生成器"
+abstract: "基于已验证的全栈+AI工程知识库标准，自动生成结构完整、排版统一、元数据规范的新知识库。支持从零初始化知识库、批量生成标准化笔记、生成MOC内容地图、生成学习路线图、统一元数据格式等功能。"
+type: software
+authors:
+  - family-names: "开发者"
+    given-names: "项目"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+version: 3.1.0
+date-released: 2026-08-30
+license: MIT
+repository-code: "https://github.com/your-username/obsidian-knowledge-base-creator"
+url: "https://github.com/your-username/obsidian-knowledge-base-creator"
+keywords:
+  - obsidian
+  - knowledge-base
+  - markdown
+  - documentation
+  - note-taking
+  - knowledge-management
+  - learning-path
+  - moc
+  - frontmatter
+  - full-stack
+  - ai-engineering
+references:
+  - type: article
+    title: "原子化笔记方法论"
+    author:
+      - family-names: "Ahrens"
+        given-names: "Sönke"
+    year: 2017
+    doi: "10.xxxx/xxxxxx"
+  - type: book
+    title: "如何制作第二大脑"
+    author:
+      - family-names: "Forte"
+        given-names: "Tiago"
+    year: 2022
+    isbn: "978-xxxx-xxxx-x"

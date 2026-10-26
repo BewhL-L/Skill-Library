@@ -1,0 +1,56 @@
+{
+  "app:go-back": [
+    {
+      "modifiers": ["Alt"],
+      "key": "ArrowLeft"
+    }
+  ],
+  "app:go-forward": [
+    {
+      "modifiers": ["Alt"],
+      "key": "ArrowRight"
+    }
+  ],
+  "editor:toggle-source": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "E"
+    }
+  ],
+  "graph:open": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "G"
+    }
+  ],
+  "switcher:open": [
+    {
+      "modifiers": ["Ctrl"],
+      "key": "O"
+    }
+  ],
+  "command-palette:open": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "P"
+    }
+  ],
+  "file-explorer:new-file": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "N"
+    }
+  ],
+  "editor:fold-all": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "["
+    }
+  ],
+  "editor:unfold-all": [
+    {
+      "modifiers": ["Ctrl", "Shift"],
+      "key": "]"
+    }
+  ]
+}

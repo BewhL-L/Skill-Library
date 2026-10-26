@@ -1,0 +1,195 @@
+# ============================================
+# Obsidian 知识库配置文件
+# 将此文件放在知识库根目录，命名为 .kb-config.yaml
+# ============================================
+
+# 知识库基本信息
+kb:
+  name: "我的知识库"           # 知识库名称
+  theme: "全栈+AI工程"         # 知识库主题
+  version: "1.0.0"            # 知识库版本
+  description: "从零基础到资深专家的完整学习路径"
+
+# 目录结构配置
+structure:
+  # 12 个顶级分类（不要随意修改编号）
+  categories:
+    - id: "00"
+      name: "综合导航"
+      desc: "首页、学习路线、知识地图、索引"
+    - id: "01"
+      name: "前端开发"
+      desc: "HTML/CSS/JS/Vue/React/工程化"
+    - id: "02"
+      name: "后端开发"
+      desc: "Java/Spring/微服务/并发/JVM"
+    - id: "03"
+      name: "数据库与缓存"
+      desc: "MySQL/Redis/向量数据库/ES"
+    - id: "04"
+      name: "分布式与中间件"
+      desc: "MQ/分布式事务/分布式锁/限流熔断"
+    - id: "05"
+      name: "云原生与运维"
+      desc: "Docker/K8s/DevOps/监控/Linux"
+    - id: "06"
+      name: "计算机基础"
+      desc: "网络/操作系统/数据结构/算法"
+    - id: "07"
+      name: "通用工具"
+      desc: "Git/IDE/效率工具/终端"
+    - id: "08"
+      name: "Python全栈"
+      desc: "Python/FastAPI/异步/测试"
+    - id: "09"
+      name: "AI与效率工具"
+      desc: "LLM/RAG/Agent/多模态/Prompt"
+    - id: "99"
+      name: "项目实战"
+      desc: "综合项目/案例/实战"
+
+# Frontmatter 默认配置
+frontmatter:
+  # 默认字段值
+  defaults:
+    status: "✅ 内容已完善"
+    priority: "重要"
+    difficulty: "⭐⭐⭐"
+  # 必须包含的字段
+  required:
+    - title
+    - tags
+    - category
+    - created
+    - updated
+    - difficulty
+    - status
+    - priority
+    - pre
+  # 可选字段
+  optional:
+    - aliases
+    - description
+    - author
+
+# 标签配置
+tags:
+  # 每个笔记的标签数量范围
+  min_count: 2
+  max_count: 8
+  # 是否允许使用核心标签集之外的标签
+  allow_custom: true
+  # 核心标签集文件路径
+  core_tags_file: "references/tag-taxonomy.md"
+
+# 难度配置
+difficulty:
+  # 使用星级制（true）还是文字等级（false）
+  use_stars: true
+  # 星级定义
+  levels:
+    "⭐": "入门"
+    "⭐⭐": "进阶"
+    "⭐⭐⭐": "高级"
+    "⭐⭐⭐⭐": "专家"
+    "⭐⭐⭐⭐⭐": "资深"
+
+# 笔记生成配置
+note_generation:
+  # 默认使用的模板
+  default_template: "note-template.md"
+  # 五段式结构
+  sections:
+    - name: "概述"
+      weight: 15
+    - name: "原理"
+      weight: 30
+    - name: "实操"
+      weight: 30
+    - name: "问题"
+      weight: 15
+    - name: "拓展"
+      weight: 10
+  # 自动创建关联笔记
+  auto_create_links: true
+  # 自动更新 MOC
+  auto_update_moc: true
+
+# MOC 配置
+moc:
+  # 自动生成学习路线
+  auto_learning_path: true
+  # 文档索引排序方式（name/difficulty/created）
+  sort_by: "difficulty"
+  # 显示文档数量统计
+  show_stats: true
+
+# 死链修复配置
+deadlink_fix:
+  # 自动创建笔记的引用阈值
+  create_threshold: 3
+  # 自动推断分类
+  auto_infer_category: true
+  # 创建笔记的默认状态
+  default_status: "📝 草稿"
+  # 创建笔记的默认难度
+  default_difficulty: "⭐⭐"
+
+# 健康检查配置
+audit:
+  # 检查项
+  checks:
+    - frontmatter_complete
+    - tags_valid
+    - no_deadlinks
+    - no_isolated_notes
+    - moc_coverage
+    - structure_complete
+  # 孤立文档的入链阈值（小于此值视为孤立）
+  isolated_threshold: 0
+  # 输出报告格式（text/json/markdown）
+  report_format: "text"
+
+# 学习路线配置
+learning_path:
+  # 四阶段定义
+  stages:
+    - name: "入门筑基"
+      duration: "0-3个月"
+      goal: "掌握基础语法和工具"
+    - name: "进阶提升"
+      duration: "3-6个月"
+      goal: "深入理解核心原理"
+    - name: "高级精通"
+      duration: "6-12个月"
+      goal: "掌握架构设计"
+    - name: "专家架构"
+      duration: "12个月+"
+      goal: "技术引领和输出"
+  # 每个阶段必须包含项目实战
+  require_project: true
+  # 每个阶段必须有验收标准
+  require_acceptance: true
+
+# Obsidian 相关配置
+obsidian:
+  # 推荐插件
+  recommended_plugins:
+    - "Dataview"
+    - "Templater"
+    - "Calendar"
+    - "Graph Analysis"
+    - "Excalidraw"
+  # 关系图谱颜色分组（按文件夹）
+  graph_colors:
+    "00-综合导航": "#FF6B6B"
+    "01-前端开发": "#4ECDC4"
+    "02-后端开发": "#45B7D1"
+    "03-数据库与缓存": "#96CEB4"
+    "04-分布式与中间件": "#FFEAA7"
+    "05-云原生与运维": "#DDA0DD"
+    "06-计算机基础": "#98D8C8"
+    "07-通用工具": "#F7DC6F"
+    "08-Python全栈": "#BB8FCE"
+    "09-AI与效率工具": "#85C1E9"
+    "99-项目实战": "#F8B500"

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+
+      - name: Syntax compile
+        run: python -m py_compile scripts/*.py
+
+      - name: Run tests
+        run: python -m pytest tests --cov=scripts --cov-report=term-missing
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Skill health audit
+        run: |
+          if [ -d ../skill-optimizer ]; then
+            python ../skill-optimizer/scripts/audit-skill.py --path . --format json --output audit-report.json || true
+          else
+            echo "skill-optimizer 不在相邻目录，跳过审计步骤"
+          fi

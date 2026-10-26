@@ -1,0 +1,77 @@
+# 代码覆盖率配置文件
+# 用于配置 coverage.py 的行为
+
+[run]
+# 要测量的源代码目录
+source =
+    scripts/
+    kb.py
+    lint.py
+    test-all.py
+    unit-test.py
+
+# 排除不需要测量的文件
+omit =
+    */site-packages/*
+    */distutils/*
+    */tests/*
+    */test_*.py
+    setup.py
+    __init__.py
+
+# 分支覆盖率测量
+branch = True
+
+# 测量动态上下文
+dynamic_context = test_function
+
+[report]
+# 显示缺失的行
+show_missing = True
+
+# 跳过覆盖的文件
+skip_covered = False
+
+# 排除不执行的行
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+
+# 部分覆盖的行排除
+partial_branches =
+    pragma: no branch
+    if __name__ == .__main__.:
+
+# 输出格式
+format =
+    text
+    html
+    xml
+
+[html]
+# HTML 报告输出目录
+directory = coverage_html_report
+
+# HTML 报告标题
+title = Obsidian Knowledge Base Creator - 代码覆盖率报告
+
+[xml]
+# XML 报告输出文件
+output = coverage.xml
+
+[json]
+# JSON 报告输出文件
+output = coverage.json
+
+[paths]
+# 路径映射，用于合并不同环境的覆盖率数据
+source =
+    scripts/
+    */site-packages/*/scripts/

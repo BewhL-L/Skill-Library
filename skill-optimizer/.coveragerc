@@ -1,0 +1,19 @@
+[run]
+source = .
+omit =
+    */tests/*
+    */__pycache__/*
+    */.venv/*
+    setup.py
+    conftest.py
+
+[report]
+show_missing = True
+skip_covered = False
+precision = 2
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

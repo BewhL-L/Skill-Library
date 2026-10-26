@@ -1,0 +1,107 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:00-综合导航",
+      "color": {
+        "a": 1,
+        "rgb": 16740011
+      }
+    },
+    {
+      "query": "path:01-前端开发",
+      "color": {
+        "a": 1,
+        "rgb": 5174468
+      }
+    },
+    {
+      "query": "path:02-后端开发",
+      "color": {
+        "a": 1,
+        "rgb": 4568017
+      }
+    },
+    {
+      "query": "path:03-数据库与缓存",
+      "color": {
+        "a": 1,
+        "rgb": 9883316
+      }
+    },
+    {
+      "query": "path:04-分布式与中间件",
+      "color": {
+        "a": 1,
+        "rgb": 16766639
+      }
+    },
+    {
+      "query": "path:05-云原生与运维",
+      "color": {
+        "a": 1,
+        "rgb": 14524637
+      }
+    },
+    {
+      "query": "path:06-计算机基础",
+      "color": {
+        "a": 1,
+        "rgb": 10011848
+      }
+    },
+    {
+      "query": "path:07-通用工具",
+      "color": {
+        "a": 1,
+        "rgb": 16250479
+      }
+    },
+    {
+      "query": "path:08-Python全栈",
+      "color": {
+        "a": 1,
+        "rgb": 12295630
+      }
+    },
+    {
+      "query": "path:09-AI与效率工具",
+      "color": {
+        "a": 1,
+        "rgb": 8765929
+      }
+    },
+    {
+      "query": "path:99-项目实战",
+      "color": {
+        "a": 1,
+        "rgb": 16298240
+      }
+    },
+    {
+      "query": "tag:#MOC",
+      "color": {
+        "a": 1,
+        "rgb": 255255255
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": false,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": false,
+  "centerStrength": 0.5187132489784036,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 1,
+  "close": true
+}

@@ -1,0 +1,138 @@
+# ============================================
+# 前端开发知识库主题配置
+# 用法: kb.bat init --name "前端知识库" --path ./frontend-kb --config themes/frontend-dev.yaml
+# ============================================
+
+kb:
+  name: "前端开发知识库"
+  theme: "前端工程+全栈开发"
+  version: "1.0.0"
+  description: "从HTML/CSS基础到前端架构的完整学习路径，覆盖Vue3、React、工程化、性能优化"
+
+structure:
+  categories:
+    - id: "00"
+      name: "综合导航"
+      desc: "首页、学习路线、知识地图、索引"
+    - id: "01"
+      name: "HTML与CSS"
+      desc: "HTML5、CSS3、布局、响应式、动画"
+    - id: "02"
+      name: "JavaScript核心"
+      desc: "ES6+、异步编程、原型链、闭包、DOM"
+    - id: "03"
+      name: "Vue3框架"
+      desc: "组合式API、响应式原理、Pinia、Vue Router"
+    - id: "04"
+      name: "React框架"
+      desc: "Hooks、状态管理、React Router、性能优化"
+    - id: "05"
+      name: "前端工程化"
+      desc: "Vite、Webpack、构建优化、CI/CD、代码规范"
+    - id: "06"
+      name: "TypeScript"
+      desc: "类型系统、泛型、高级类型、类型体操"
+    - id: "07"
+      name: "性能优化"
+      desc: "加载优化、渲染优化、Core Web Vitals、监控"
+    - id: "08"
+      name: "浏览器与网络"
+      desc: "浏览器原理、HTTP、缓存、安全、跨域"
+    - id: "09"
+      name: "全栈与Node.js"
+      desc: "Node.js、Express/Nest、SSR、全栈项目"
+    - id: "99"
+      name: "项目实战"
+      desc: "前端项目、全栈项目、组件库、综合实战"
+
+frontmatter:
+  defaults:
+    status: "✅ 内容已完善"
+    priority: "重要"
+    difficulty: "⭐⭐⭐"
+  required:
+    - title
+    - tags
+    - category
+    - created
+    - updated
+    - difficulty
+    - status
+    - priority
+    - pre
+  optional:
+    - aliases
+    - description
+    - framework
+    - browser
+
+tags:
+  min_count: 2
+  max_count: 8
+  allow_custom: true
+  core_tags_file: "references/tag-taxonomy.md"
+
+difficulty:
+  use_stars: true
+  levels:
+    "⭐": "入门"
+    "⭐⭐": "进阶"
+    "⭐⭐⭐": "高级"
+    "⭐⭐⭐⭐": "专家"
+    "⭐⭐⭐⭐⭐": "资深"
+
+note_generation:
+  default_template: "note-template.md"
+  sections:
+    - name: "概述"
+      weight: 15
+    - name: "原理"
+      weight: 25
+    - name: "实操"
+      weight: 35
+    - name: "问题"
+      weight: 15
+    - name: "拓展"
+      weight: 10
+  auto_create_links: true
+  auto_update_moc: true
+
+learning_path:
+  stages:
+    - name: "入门筑基"
+      duration: "0-2个月"
+      goal: "掌握HTML/CSS/JavaScript基础"
+    - name: "进阶提升"
+      duration: "2-4个月"
+      goal: "掌握Vue3/React框架和TypeScript"
+    - name: "高级精通"
+      duration: "4-8个月"
+      goal: "掌握工程化、性能优化、浏览器原理"
+    - name: "专家架构"
+      duration: "8个月+"
+      goal: "前端架构设计、全栈开发、技术引领"
+  require_project: true
+  require_acceptance: true
+
+obsidian:
+  recommended_plugins:
+    - "Dataview"
+    - "Templater"
+    - "Excalidraw"
+    - "Graph Analysis"
+    - "Code Editor Shortcuts"
+  graph_colors:
+    "00-综合导航": "#FF6B6B"
+    "01-HTML与CSS": "#4ECDC4"
+    "02-JavaScript核心": "#F7DC6F"
+    "03-Vue3框架": "#45B7D1"
+    "04-React框架": "#61DAFB"
+    "05-前端工程化": "#96CEB4"
+    "06-TypeScript": "#3178C6"
+    "07-性能优化": "#FFEAA7"
+    "08-浏览器与网络": "#DDA0DD"
+    "09-全栈与Node.js": "#BB8FCE"
+    "99-项目实战": "#F8B500"
+
+templates:
+  dir: null

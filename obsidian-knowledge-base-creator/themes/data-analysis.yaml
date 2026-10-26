@@ -1,0 +1,134 @@
+# ============================================
+# 数据分析知识库主题配置
+# 用法: kb.bat init --name "数据分析知识库" --path ./data-kb --config themes/data-analysis.yaml
+# ============================================
+
+kb:
+  name: "数据分析知识库"
+  theme: "数据分析+数据科学"
+  version: "1.0.0"
+  description: "从数据基础到数据科学的完整学习路径，覆盖 SQL、Python、统计、机器学习、数据可视化"
+
+structure:
+  categories:
+    - id: "00"
+      name: "综合导航"
+      desc: "首页、学习路线、知识地图、索引"
+    - id: "01"
+      name: "数据基础"
+      desc: "SQL、数据库、数据仓库、ETL"
+    - id: "02"
+      name: "Python数据科学"
+      desc: "NumPy、Pandas、数据清洗、数据处理"
+    - id: "03"
+      name: "统计学基础"
+      desc: "描述统计、推断统计、假设检验、概率分布"
+    - id: "04"
+      name: "数据可视化"
+      desc: "Matplotlib、Seaborn、Plotly、BI工具、仪表盘"
+    - id: "05"
+      name: "机器学习"
+      desc: "监督学习、无监督学习、模型评估、特征工程"
+    - id: "06"
+      name: "深度学习"
+      desc: "神经网络、CNN、RNN、Transformer、PyTorch/TensorFlow"
+    - id: "07"
+      name: "大数据与工程"
+      desc: "Spark、Hadoop、Flink、数据管道、MLOps"
+    - id: "08"
+      name: "业务分析与案例"
+      desc: "用户分析、增长分析、财务分析、行业案例"
+    - id: "99"
+      name: "项目实战"
+      desc: "数据分析项目、机器学习项目、综合实战"
+
+frontmatter:
+  defaults:
+    status: "✅ 内容已完善"
+    priority: "重要"
+    difficulty: "⭐⭐⭐"
+  required:
+    - title
+    - tags
+    - category
+    - created
+    - updated
+    - difficulty
+    - status
+    - priority
+    - pre
+  optional:
+    - aliases
+    - description
+    - dataset
+    - tools
+
+tags:
+  min_count: 2
+  max_count: 8
+  allow_custom: true
+  core_tags_file: "references/tag-taxonomy.md"
+
+difficulty:
+  use_stars: true
+  levels:
+    "⭐": "入门"
+    "⭐⭐": "进阶"
+    "⭐⭐⭐": "高级"
+    "⭐⭐⭐⭐": "专家"
+    "⭐⭐⭐⭐⭐": "资深"
+
+note_generation:
+  default_template: "note-template.md"
+  sections:
+    - name: "概述"
+      weight: 15
+    - name: "原理"
+      weight: 25
+    - name: "实操"
+      weight: 35
+    - name: "问题"
+      weight: 15
+    - name: "拓展"
+      weight: 10
+  auto_create_links: true
+  auto_update_moc: true
+
+learning_path:
+  stages:
+    - name: "入门筑基"
+      duration: "0-2个月"
+      goal: "掌握SQL和Python数据处理基础"
+    - name: "进阶提升"
+      duration: "2-4个月"
+      goal: "掌握统计学和数据可视化"
+    - name: "高级精通"
+      duration: "4-8个月"
+      goal: "掌握机器学习和深度学习"
+    - name: "专家架构"
+      duration: "8个月+"
+      goal: "大数据工程和业务分析能力"
+  require_project: true
+  require_acceptance: true
+
+obsidian:
+  recommended_plugins:
+    - "Dataview"
+    - "Templater"
+    - "Jupyter"
+    - "Excalidraw"
+    - "Graph Analysis"
+  graph_colors:
+    "00-综合导航": "#FF6B6B"
+    "01-数据基础": "#4ECDC4"
+    "02-Python数据科学": "#45B7D1"
+    "03-统计学基础": "#96CEB4"
+    "04-数据可视化": "#FFEAA7"
+    "05-机器学习": "#DDA0DD"
+    "06-深度学习": "#98D8C8"
+    "07-大数据与工程": "#F7DC6F"
+    "08-业务分析与案例": "#BB8FCE"
+    "99-项目实战": "#F8B500"
+
+templates:
+  dir: null

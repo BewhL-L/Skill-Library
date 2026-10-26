@@ -1,0 +1,63 @@
+# CODEOWNERS - 代码所有者配置
+# 参考：https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# 语法：<文件模式> <@用户名或团队>
+# 最后匹配的模式优先
+
+# 默认所有者（所有文件）
+* @your-username
+
+# 核心脚本
+/scripts/ @your-username @core-team
+/kb.py @your-username @core-team
+
+# 测试相关
+/tests/test-all.py @your-username @qa-team
+/tests/unit-test.py @your-username @qa-team
+/scripts/lint.py @your-username @qa-team
+
+# 模板文件
+/assets/ @your-username @docs-team
+
+# 参考文档
+/references/ @your-username @docs-team
+
+# 示例知识库
+/examples/ @your-username @docs-team
+
+# 文档
+/README.md @your-username @docs-team
+/SKILL.md @your-username @docs-team
+/QUICKSTART.md @your-username @docs-team
+/FAQ.md @your-username @docs-team
+/CHANGELOG.md @your-username @docs-team
+/CONTRIBUTING.md @your-username @docs-team
+/USE-CASES.md @your-username @docs-team
+/OBSIDIAN-GUIDE.md @your-username @docs-team
+
+# CI/CD 配置
+/.github/workflows/ @your-username @devops-team
+/.github/ISSUE_TEMPLATE/ @your-username @devops-team
+/.github/pull_request_template.md @your-username @devops-team
+/.github/CODEOWNERS @your-username @devops-team
+
+# 项目配置
+/Makefile @your-username @devops-team
+/pyproject.toml @your-username @devops-team
+/requirements.txt @your-username @devops-team
+/requirements-dev.txt @your-username @devops-team
+/.pre-commit-config.yaml @your-username @devops-team
+/.coveragerc @your-username @devops-team
+/.editorconfig @your-username @devops-team
+/.gitignore @your-username @devops-team
+/.markdownlint.json @your-username @devops-team
+
+# 安装脚本
+/install.bat @your-username @devops-team
+/install.sh @your-username @devops-team
+/uninstall.bat @your-username @devops-team
+/uninstall.sh @your-username @devops-team
+/kb.bat @your-username @devops-team
+
+# 许可证
+/LICENSE @your-username

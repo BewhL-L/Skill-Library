@@ -1,0 +1,134 @@
+# ============================================
+# AI 工程化知识库主题配置
+# 用法: kb.bat init --name "AI知识库" --path ./ai-kb --config themes/ai-engineering.yaml
+# ============================================
+
+kb:
+  name: "AI 工程化知识库"
+  theme: "AI工程化+LLM应用开发"
+  version: "1.0.0"
+  description: "从大模型基础到 AI 应用开发的完整学习路径，覆盖 LLM、RAG、Agent、多模态、AI 工程化"
+
+# AI 工程化主题的自定义分类（8 个分类，区别于全栈的 12 分类）
+structure:
+  categories:
+    - id: "00"
+      name: "综合导航"
+      desc: "首页、学习路线、知识地图、索引"
+    - id: "01"
+      name: "大模型基础"
+      desc: "LLM原理、Transformer、注意力机制、模型训练"
+    - id: "02"
+      name: "Prompt工程"
+      desc: "提示词设计、少样本学习、思维链、提示词优化"
+    - id: "03"
+      name: "RAG检索增强"
+      desc: "向量数据库、文档解析、检索策略、重排序"
+    - id: "04"
+      name: "AI Agent"
+      desc: "智能体架构、工具调用、多Agent协作、规划推理"
+    - id: "05"
+      name: "多模态与应用"
+      desc: "图文音视频生成、多模态理解、AI应用开发"
+    - id: "06"
+      name: "AI工程化"
+      desc: "模型部署、性能优化、监控评估、安全对齐"
+    - id: "99"
+      name: "项目实战"
+      desc: "AI项目、RAG系统、Agent应用、综合实战"
+
+frontmatter:
+  defaults:
+    status: "✅ 内容已完善"
+    priority: "重要"
+    difficulty: "⭐⭐⭐"
+  required:
+    - title
+    - tags
+    - category
+    - created
+    - updated
+    - difficulty
+    - status
+    - priority
+    - pre
+  optional:
+    - aliases
+    - description
+    - author
+    - model
+    - framework
+
+tags:
+  min_count: 2
+  max_count: 8
+  allow_custom: true
+  core_tags_file: "references/tag-taxonomy.md"
+
+difficulty:
+  use_stars: true
+  levels:
+    "⭐": "入门"
+    "⭐⭐": "进阶"
+    "⭐⭐⭐": "高级"
+    "⭐⭐⭐⭐": "专家"
+    "⭐⭐⭐⭐⭐": "资深"
+
+note_generation:
+  default_template: "note-template.md"
+  sections:
+    - name: "概述"
+      weight: 15
+    - name: "原理"
+      weight: 30
+    - name: "实操"
+      weight: 30
+    - name: "问题"
+      weight: 15
+    - name: "拓展"
+      weight: 10
+  auto_create_links: true
+  auto_update_moc: true
+
+moc:
+  auto_learning_path: true
+  sort_by: "difficulty"
+  show_stats: true
+
+learning_path:
+  stages:
+    - name: "入门筑基"
+      duration: "0-2个月"
+      goal: "掌握大模型基础和 Prompt 工程"
+    - name: "进阶提升"
+      duration: "2-4个月"
+      goal: "掌握 RAG 和 Agent 开发"
+    - name: "高级精通"
+      duration: "4-8个月"
+      goal: "掌握多模态和 AI 工程化"
+    - name: "专家架构"
+      duration: "8个月+"
+      goal: "AI 系统架构设计和技术引领"
+  require_project: true
+  require_acceptance: true
+
+obsidian:
+  recommended_plugins:
+    - "Dataview"
+    - "Templater"
+    - "Calendar"
+    - "Graph Analysis"
+    - "Excalidraw"
+    - "Ozan's Image in Editor Plugin"
+  graph_colors:
+    "00-综合导航": "#FF6B6B"
+    "01-大模型基础": "#667eea"
+    "02-Prompt工程": "#f093fb"
+    "03-RAG检索增强": "#4facfe"
+    "04-AI Agent": "#fa709a"
+    "05-多模态与应用": "#43e97b"
+    "06-AI工程化": "#fa709a"
+    "99-项目实战": "#F8B500"
+
+templates:
+  dir: null

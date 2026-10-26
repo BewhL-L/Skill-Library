@@ -1,0 +1,17 @@
+# GitHub Issue 模板配置
+# 参考：https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository
+
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 文档
+    url: https://github.com/your-username/obsidian-knowledge-base-creator/blob/main/README.md
+    about: 请先阅读文档，可能已经有你需要的答案
+  - name: ❓ 常见问题
+    url: https://github.com/your-username/obsidian-knowledge-base-creator/blob/main/FAQ.md
+    about: 查看常见问题解答
+  - name: 💬 讨论
+    url: https://github.com/your-username/obsidian-knowledge-base-creator/discussions
+    about: 在讨论区提问或分享使用经验
+  - name: 📝 使用案例
+    url: https://github.com/your-username/obsidian-knowledge-base-creator/blob/main/USE-CASES.md
+    about: 查看使用案例与最佳实践

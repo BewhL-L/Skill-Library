@@ -1,0 +1,34 @@
+# GitHub 赞助配置
+# 参考：https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# GitHub Sponsors
+github: [your-username]
+
+# Patreon
+patreon: your-username
+
+# Open Collective
+open_collective: your-project-name
+
+# Ko-fi
+ko_fi: your-username
+
+# 自定义链接
+custom:
+  - "https://example.com/sponsor"
+  - "https://example.com/donate"
+
+# 社区桥梁（Community Bridge）
+community_bridge: your-project-name
+
+# Liberapay
+liberapay: your-username
+
+# IssueHunt
+issuehunt: your-username
+
+# Otechie
+otechie: your-username
+
+# Polar
+polar: your-username

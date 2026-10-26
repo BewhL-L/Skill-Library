@@ -1,0 +1,173 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "obsidian-knowledge-base-creator"
+version = "3.0.0"
+description = "标准化 Obsidian 知识库生成器，基于已验证的全栈+AI工程知识库标准，自动生成结构完整、排版统一、元数据规范的新知识库。"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Obsidian Knowledge Base Creator Team"}
+]
+keywords = ["obsidian", "knowledge-base", "markdown", "documentation", "learning", "fullstack", "ai"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "coverage>=7.0",
+    "flake8>=6.0",
+    "black>=23.0",
+    "isort>=5.12",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "bandit>=1.7",
+    "safety>=2.3",
+]
+
+[project.scripts]
+kb = "kb:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts*"]
+exclude = ["tests*", "examples*", "assets*", "references*"]
+
+[tool.black]
+line-length = 120
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+include = '\.pyi?$'
+extend-exclude = [
+    '/(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist)/',
+]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+known_first_party = ["scripts"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "venv",
+    "env",
+    "examples",
+    "assets",
+    "references",
+]
+per-file-ignores = [
+    "__init__.py:F401",
+    "scripts/kb.py:E402",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+ignore_missing_imports = true
+disable_error_code = ["attr-defined", "name-defined", "union-attr"]
+exclude = [
+    "examples/",
+    "assets/",
+    "references/",
+    "tests/",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["."]
+python_files = ["test_*.py", "*_test.py", "unit-test.py", "test-all.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "unit: 单元测试",
+    "integration: 集成测试",
+    "slow: 慢速测试",
+]
+
+[tool.coverage.run]
+source = ["scripts", "lint.py"]
+omit = [
+    "*/site-packages/*",
+    "*/distutils/*",
+    "*/tests/*",
+    "setup.py",
+    "__init__.py",
+]
+branch = true
+dynamic_context = "test_function"
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+partial_branches = [
+    "pragma: no branch",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+title = "Obsidian Knowledge Base Creator - 代码覆盖率报告"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.coverage.json]
+output = "coverage.json"
+
+[tool.bandit]
+exclude_dirs = ["tests", "examples", "assets", "references", ".git", "__pycache__"]
+tests = ["B101", "B102", "B103", "B104", "B105", "B106", "B107", "B108", "B110", "B112"]
+skips = ["B101", "B603", "B607"]
+
+[tool.pre-commit]
+default_stages = ["commit"]
+minimum_pre_commit_version = "3.0.0"

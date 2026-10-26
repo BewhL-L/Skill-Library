@@ -1,0 +1,7 @@
+# scripts/ 下 4 个 CLI 仅使用 Python 标准库，运行时无需安装任何第三方依赖。
+# Python >= 3.8 即可。
+#
+# 开发 / 测试依赖（可选）：
+#   pip install pytest pytest-cov ruff
+# 或：
+#   pip install -e ".[dev]"

@@ -1,0 +1,36 @@
+# 开发依赖
+# Obsidian 知识库标准化生成器 - 开发和测试依赖
+#
+# 安装方法: pip install -r requirements-dev.txt
+
+# ========== 测试框架 ==========
+pytest>=7.0
+pytest-cov>=4.0
+coverage>=7.0
+
+# ========== 代码质量 ==========
+flake8>=6.0
+flake8-docstrings>=1.7
+flake8-import-order>=0.18
+black>=23.0
+isort>=5.12
+autopep8>=2.0
+
+# ========== 类型检查 ==========
+mypy>=1.0
+types-PyYAML>=6.0
+
+# ========== 代码安全 ==========
+bandit>=1.7
+safety>=2.3
+
+# ========== Git 钩子 ==========
+pre-commit>=3.0
+
+# ========== 文档生成 ==========
+# mkdocs>=1.5
+# mkdocs-material>=9.0
+
+# ========== 其他工具 ==========
+# rich>=13.0  # 富文本输出（可选）
+# click>=8.0  # CLI 框架（可选，当前使用 argparse）

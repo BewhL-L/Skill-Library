@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+:root{
+  --bg:#0a0a0f;--text:#f5f5f7;--muted:rgba(255,255,255,.55);--faint:rgba(255,255,255,.35);
+  --accent:#e06391;--on-accent:#fff;
+  --fx-a:rgba(224,99,145,.18);--fx-b:rgba(99,140,224,.16);--fx-c:rgba(140,99,224,.12);
+  --glass-tint:rgba(20,22,30,.55);--glass-border:rgba(255,255,255,.08);--glass-blur:20px;
+  --border:rgba(255,255,255,.08);--ease:cubic-bezier(.22,1,.36,1);
+  --r-sm:8px;--r-md:14px;--r-lg:20px;
+}
+:root[data-ae="prism"]{--bg:#0c0e1a;--fx-a:rgba(120,180,255,.22);--fx-b:rgba(255,150,200,.18);--fx-c:rgba(180,140,255,.14)}
+:root[data-ae="corridor"]{--bg:#0d0a14;--fx-a:rgba(150,100,255,.20);--fx-b:rgba(100,80,200,.16);--fx-c:rgba(200,150,255,.12)}
+:root[data-ae="threads"]{--bg:#08100e;--fx-a:rgba(80,220,180,.16);--fx-b:rgba(60,180,200,.14);--fx-c:rgba(120,255,200,.10)}
+:root[data-ae="waves"]{--bg:#0a0a0f;--fx-a:rgba(224,99,145,.18);--fx-b:rgba(99,140,224,.16);--fx-c:rgba(140,99,224,.12)}
+:root[data-ae="fibers"]{--bg:#0a0d12;--fx-a:rgba(100,160,220,.16);--fx-b:rgba(120,140,180,.14);--fx-c:rgba(160,200,240,.10)}
+:root[data-ae="acid"]{--bg:#0e0c08;--fx-a:rgba(220,220,80,.14);--fx-b:rgba(255,140,60,.14);--fx-c:rgba(180,255,120,.10)}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  font-size:14px;line-height:1.65;letter-spacing:.01em;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%;
+  min-height:100vh;padding:20px 20px 100px;
+}
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-fx>i{position:absolute;border-radius:50%}
+.orb-a{width:80vmax;height:80vmax;left:-30vmax;top:-34vmax;background:radial-gradient(circle at 44% 46%,var(--fx-a),transparent 62%);animation:orbA 48s ease-in-out infinite}
+.orb-b{width:68vmax;height:68vmax;right:-28vmax;bottom:-32vmax;background:radial-gradient(circle at 56% 56%,var(--fx-b),transparent 64%);animation:orbB 62s ease-in-out infinite}
+.orb-c{width:54vmax;height:54vmax;left:30vmax;top:4vmax;background:radial-gradient(circle at 50% 50%,var(--fx-c),transparent 66%);animation:orbC 38s ease-in-out infinite}
+@keyframes orbA{0%,100%{transform:translate(0,0) rotate(0) scale(1)}50%{transform:translate(13%,10%) rotate(16deg) scale(1.15)}}
+@keyframes orbB{0%,100%{transform:translate(0,0) rotate(0) scale(1.08)}50%{transform:translate(-11%,-13%) rotate(-12deg) scale(.93)}}
+@keyframes orbC{0%,100%{transform:translate(0,0) scale(.95)}50%{transform:translate(9%,-9%) scale(1.12)}}
+
+.wrap{max-width:960px;margin:0 auto;position:relative;z-index:1}
+
+/* 顶部栏 */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#638ce0);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.brand-name{font-size:15px;font-weight:600}
+.theme-bar{display:flex;gap:6px}
+.theme-btn{width:24px;height:24px;border-radius:50%;border:2px solid var(--glass-border);cursor:pointer;transition:transform .2s}
+.theme-btn:hover{transform:scale(1.15)}
+.theme-btn.active{border-color:#fff}
+
+/* 玻璃卡片 + 3D tilt */
+.glass{
+  position:relative;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.01) 42%,transparent 68%),var(--glass-tint);
+  border:1px solid var(--glass-border);border-radius:var(--r-lg);
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7);backdrop-filter:blur(var(--glass-blur)) saturate(1.7);
+  padding:22px;margin-bottom:16px;
+  transform-style:preserve-3d;transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+}
+.glass:hover{box-shadow:0 12px 40px rgba(0,0,0,.4)}
+
+/* 入场 3D 翻入 */
+.rv{opacity:0;transform:perspective(900px) translateY(20px) rotateX(5deg);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:perspective(900px) translateY(0) rotateX(0)}
+
+h1{font-size:24px;font-weight:700;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+
+/* hero 总进度条 */
+.overall-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:14px;overflow:hidden}
+.overall-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#638ce0);border-radius:3px;transition:width .6s var(--ease)}
+
+/* 统计卡 */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{padding:14px 16px;border-radius:var(--r-md);background:var(--glass-tint);border:1px solid var(--glass-border);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.stat:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.stat b{font-size:22px;font-weight:700;color:var(--accent)}
+.stat span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+
+/* 阶段进度 */
+.phases{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.phase{padding:8px 4px;border-radius:8px;text-align:center;font-size:10px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border)}
+.phase.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.phase.done{opacity:.4}
+
+/* 任务行 */
+.task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.task:last-child{border:none}
+.chk{cursor:pointer;user-select:none;border-radius:999px;padding:4px 10px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .2s;flex-shrink:0}
+.chk.done{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chk.skip{opacity:.4;text-decoration:line-through}
+.task-name{flex:1;font-size:13px}
+.task-h{color:var(--faint);font-size:12px}
+
+/* 周切换 */
+.week-nav{display:flex;gap:8px;align-items:center}
+.wnav-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.wnav-btn:hover{color:#fff;border-color:#fff}
+.wnav-btn:disabled{opacity:.3;cursor:not-allowed}
+.week-label{font-size:12px;color:var(--muted)}
+.card-link{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;transition:color .2s}
+.card-link:hover{color:var(--accent)}
+
+/* 落后提示条 */
+.dev-strip{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-bottom:16px;border-radius:var(--r-md);background:rgba(224,99,145,.1);border:1px solid rgba(224,99,145,.3);font-size:12px}
+.dev-strip button{margin-left:auto;background:var(--accent);color:#fff;border:none;border-radius:999px;padding:4px 12px;font-size:11px;cursor:pointer}
+
+/* 周视图 */
+.weekview{display:none}
+.weekview.active{display:block}
+.homeview.hidden{display:none}
+.wv-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.wv-back{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer}
+.wv-back:hover{color:#fff}
+.wv-head{margin-bottom:20px}
+.wv-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.wv-range{color:var(--muted);font-size:13px}
+.wv-pct{text-align:right}
+.wv-pct b{font-size:24px;color:var(--accent)}
+.wv-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px}
+.wv-day{padding:12px;border-radius:var(--r-md);background:var(--glass-tint);border:1px solid var(--border);min-height:120px}
+.wv-day-head{font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600}
+.wv-day-tasks{font-size:12px}
+.wv-day-tasks .task{padding:4px 0;font-size:11px}
+.wv-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+.wv-metric{text-align:center;padding:10px}
+.wv-metric b{font-size:18px;color:var(--accent)}
+.wv-metric span{display:block;font-size:11px;color:var(--muted)}
+.wv-note{width:100%;min-height:80px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);padding:10px;font-size:13px;resize:vertical;font-family:inherit}
+.wv-note:focus{outline:1px solid var(--accent)}
+
+/* N 周全景网格 */
+.pano-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px}
+.pano-cell{aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,.05);cursor:pointer;transition:all .2s;position:relative}
+.pano-cell:hover{transform:scale(1.1)}
+.pano-cell.done{background:var(--accent);opacity:.7}
+.pano-cell.current{box-shadow:0 0 0 2px #fff}
+
+/* 底部总进度条 */
+.player{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:12px 20px;background:var(--glass-tint);border-top:1px solid var(--glass-border);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.player-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.player-bar{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.player-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#638ce0);transition:width .6s}
+.player-date{font-size:11px;color:var(--muted);white-space:nowrap}
+
+@media(max-width:640px){.stats{grid-template-columns:repeat(1,1fr)}.phases{grid-template-columns:repeat(4,1fr)}.player-inner{flex-direction:column;gap:6px}}
+@media(prefers-reduced-motion:reduce){.bg-fx>i{animation:none}.rv{transition:none;opacity:1;transform:none}.glass,.stat{transition:none}}
+</style>
+</head>
+<body data-ae="waves">
+<div class="bg-fx"><i class="orb-a"></i><i class="orb-b"></i><i class="orb-c"></i></div>
+
+<div class="wrap">
+<div class="topbar rv">
+  <div class="brand">
+    <div class="brand-logo">{{INITIAL}}</div>
+    <div class="brand-name">{{PROJECT_NAME}}</div>
+  </div>
+  <div class="theme-bar">
+    <button class="theme-btn" data-ae="prism" style="background:linear-gradient(135deg,#78b4ff,#ff96c8)" title="光之展厅"></button>
+    <button class="theme-btn" data-ae="corridor" style="background:linear-gradient(135deg,#9664ff,#6450c8)" title="紫夜回廊"></button>
+    <button class="theme-btn" data-ae="threads" style="background:linear-gradient(135deg,#50dcb4,#3cb4c8)" title="琴弦夜曲"></button>
+    <button class="theme-btn active" data-ae="waves" style="background:linear-gradient(135deg,#e06391,#638ce0)" title="织波锦缎"></button>
+    <button class="theme-btn" data-ae="fibers" style="background:linear-gradient(135deg,#64a0dc,#788cb8)" title="幽灵纤维"></button>
+    <button class="theme-btn" data-ae="acid" style="background:linear-gradient(135deg,#dcdc50,#ff8c3c)" title="酸性方格"></button>
+  </div>
+</div>
+
+<div class="glass rv">
+  <h1>{{PROJECT_NAME}}</h1>
+  <p class="sub">{{START_STR}} → {{END_STR}} · {{WEEKS}} 周 · 每天 {{DAILY_H}}h</p>
+  <div class="overall-bar"><i id="overallBar" style="width:0%"></i></div>
+</div>
+
+<div class="homeview" id="homeView">
+<div class="stats">
+  <div class="stat rv"><b id="stStreak">0</b><span>连续打卡 · 天</span></div>
+  <div class="stat rv"><b id="stHours">0</b><span>累计投入 · 小时</span></div>
+  <div class="stat rv"><b><span id="stDone">0</span>/<span id="stTotal">0</span></b><span>任务完成 · 项</span></div>
+</div>
+
+<div class="dev-strip rv" id="devStrip" style="display:none">
+  <span>⚠️</span><span id="devTxt">—</span><button onclick="alert('重排向导：请手动调整计划')">启动重排向导</button>
+</div>
+
+<div class="glass rv">
+  <div class="card-title">
+    <span>🧭 阶段进度</span>
+  </div>
+  <div class="phases" id="phases"></div>
+</div>
+
+<div class="glass rv">
+  <div class="card-title">
+    <span>📈 本周学习节奏</span>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="week-nav">
+        <button class="wnav-btn" id="prevW" onclick="changeWeek(-1)">‹</button>
+        <span class="week-label" id="weekLabel">第 1 周</span>
+        <button class="wnav-btn" id="nextW" onclick="changeWeek(1)">›</button>
+      </div>
+      <button class="card-link" onclick="openWeekView()">查看详情 ›</button>
+    </div>
+  </div>
+  <div id="rhythmBars"></div>
+</div>
+
+<div class="glass rv">
+  <div class="card-title"><span>🎯 今日任务</span></div>
+  <div id="todayList"></div>
+</div>
+
+<div class="glass rv">
+  <div class="card-title"><span>🗺️ 全景进度</span></div>
+  <div class="pano-grid" id="panoGrid"></div>
+</div>
+</div><!-- /homeview -->
+
+<!-- 周视图 -->
+<div class="weekview" id="weekView">
+  <div class="wv-topbar">
+    <button class="wv-back" onclick="closeWeekView()">← 返回主面板</button>
+    <div class="week-nav">
+      <button class="wnav-btn" onclick="wvChange(-1)">‹</button>
+      <span class="week-label" id="wvLabel">第 1 周</span>
+      <button class="wnav-btn" onclick="wvChange(1)">›</button>
+    </div>
+  </div>
+  <div class="wv-head">
+    <div class="wv-title" id="wvTitle">—</div>
+    <div class="wv-range" id="wvRange">—</div>
+  </div>
+  <div class="wv-days" id="wvDays"></div>
+  <div class="glass rv">
+    <div class="card-title"><span>📊 本周统计</span></div>
+    <div class="wv-metrics" id="wvMetrics"></div>
+  </div>
+  <div class="glass rv">
+    <div class="card-title"><span>📝 每周复盘笔记</span><span style="font-size:11px;color:var(--muted)" id="noteCnt">0 字 · 自动保存</span></div>
+    <textarea class="wv-note" id="wvNote" rows="4" placeholder="本周学到了什么？卡在哪里？下周怎么调整？"></textarea>
+  </div>
+</div>
+
+<div class="player glass rv">
+  <div class="player-inner">
+    <span class="player-date">{{START_STR}}</span>
+    <div class="player-bar"><i id="playerBar" style="width:0%"></i></div>
+    <span class="player-date">{{END_STR}}</span>
+  </div>
+</div>
+
+<script>
+const CFG={
+  title:"{{PROJECT_NAME}}",
+  start:new Date({{START_Y}},{{START_M_MINUS_1}},{{START_D}}),
+  end:new Date({{END_Y}},{{END_M_MINUS_1}},{{END_D}}),
+  dailyH:{{DAILY_H}},
+  storageKey:"{{STORAGE_KEY}}",
+  phases:{1:"阶段一",2:"阶段二",3:"阶段三",4:"阶段四",5:"阶段五",6:"阶段六",7:"缓冲"},
+  basePlan:{{BASE_PLAN_JSON}}
+};
+const DOW=["一","二","三","四","五","六","日"];
+let viewWk=null; // null=当前周,否则指定周号
+
+function todayPos(){const n=new Date();const d=Math.floor((n-CFG.start)/86400000);
+  return{wi:Math.min(CFG.basePlan.length-1,Math.max(0,Math.floor(d/7))),di:Math.min(6,Math.max(0,((d%7)+7)%7))}}
+function load(){try{return JSON.parse(localStorage.getItem(CFG.storageKey)||"{}")}catch(e){return{}}}
+function save(s){localStorage.setItem(CFG.storageKey,JSON.stringify(s))}
+function dk(wi,di){return"w"+wi+"d"+di}
+function dayStat(wi,di){const s=load()[dk(wi,di)]||{done:{},skip:{}};
+  const t=CFG.basePlan[wi].days[di];let h=0,n=0;
+  t.forEach((x,i)=>{if(s.done[i]){h+=x[1];n++}});return{tasks:t,done:s.done,skip:s.skip,doneH:h,doneN:n}}
+function toggle(wi,di,i,type){const s=load();const k=dk(wi,di);if(!s[k])s[k]={done:{},skip:{}};
+  if(type==="done"){s[k].done[i]=!s[k].done[i];if(s[k].done[i])delete s[k].skip[i]}
+  else{s[k].skip[i]=!s[k].skip[i];if(s[k].skip[i])delete s[k].done[i]}
+  save(s);render()}
+
+/* 主题切换 */
+document.querySelectorAll(".theme-btn").forEach(b=>b.onclick=()=>{
+  document.documentElement.setAttribute("data-ae",b.dataset.ae);
+  document.querySelectorAll(".theme-btn").forEach(x=>x.classList.toggle("active",x===b));
+});
+
+/* 大卡片 3D tilt */
+document.querySelectorAll(".glass").forEach(card=>{
+  card.addEventListener("mousemove",e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(900px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateZ(4px)`;
+  });
+  card.addEventListener("mouseleave",()=>{card.style.transform=""});
+});
+
+function changeWeek(d){const tp=todayPos();
+  const cur=viewWk===null?tp.wi:viewWk;
+  const nw=Math.min(CFG.basePlan.length-1,Math.max(0,cur+d));
+  viewWk=(nw===tp.wi)?null:nw;
+  renderRhythm();renderWeekNav()}
+
+function renderWeekNav(){
+  const tp=todayPos();const cur=viewWk===null?tp.wi:viewWk;
+  document.getElementById("weekLabel").textContent="第 "+(cur+1)+" 周"+(cur===tp.wi?"（本周）":"");
+  document.getElementById("prevW").disabled=cur<=0;
+  document.getElementById("nextW").disabled=cur>=CFG.basePlan.length-1;
+}
+
+/* 阶段进度 */
+function renderPhases(){
+  const tp=todayPos(),curPh=CFG.basePlan[tp.wi].ph;
+  document.getElementById("phases").innerHTML=Object.entries(CFG.phases).map(([k,v])=>{
+    const n=+k;let cls="phase";
+    if(n<curPh)cls+=" done";else if(n===curPh)cls+=" active";
+    return `<div class="${cls}">${v}</div>`;
+  }).join("");
+}
+
+/* SVG 折线图 */
+function renderRhythm(){
+  const tp=todayPos();const wi=viewWk===null?tp.wi:viewWk;
+  const wk=CFG.basePlan[wi];
+  const plan=wk.days.map(d=>d.reduce((a,x)=>a+x[1],0));
+  const done=wk.days.map((_,di)=>dayStat(wi,di).doneH);
+  const maxH=CFG.dailyH+1,W=600,H=210,padL=28,padR=16,padT=20,padB=26;
+  const iw=W-padL-padR,ih=H-padT-padB;
+  const X=i=>padL+iw*i/6,Y=h=>padT+ih-(h/maxH)*ih;
+  function sm(p){if(p.length<3)return"M"+p.map(q=>q[0].toFixed(1)+","+q[1].toFixed(1)).join(" L");
+    let d="M"+p[0][0].toFixed(1)+","+p[0][1].toFixed(1);
+    for(let i=0;i<p.length-1;i++){const p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;
+      const c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6;
+      const c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;
+      d+=" C"+c1x.toFixed(1)+","+c1y.toFixed(1)+" "+c2x.toFixed(1)+","+c2y.toFixed(1)+" "+p2[0].toFixed(1)+","+p2[1].toFixed(1)}
+    return d}
+  const pp=plan.map((h,i)=>[X(i),Y(h)]),dp=done.map((h,i)=>[X(i),Y(h)]);
+  const ppt=sm(pp),dpt=sm(dp),by=padT+ih;
+  const ap=dpt+" L"+X(6).toFixed(1)+","+by+" L"+X(0).toFixed(1)+","+by+" Z";
+  let s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">';
+  s+='<defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e06391" stop-opacity="0.28"/><stop offset="60%" stop-color="#e06391" stop-opacity="0.08"/><stop offset="100%" stop-color="#e06391" stop-opacity="0"/></linearGradient><filter id="gl" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  [2,4,6,8].forEach(h=>{if(h<maxH-1){const gy=Y(h);s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="rgba(255,255,255,.06)"/><text x="'+(padL-5)+'" y="'+(gy+3)+'" text-anchor="end" fill="rgba(255,255,255,.32)" font-size="9">'+h+'h</text>'}});
+  s+='<path d="'+ap+'" fill="url(#gf)"/><path d="'+ppt+'" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2" stroke-dasharray="3 4"/><path d="'+dpt+'" fill="none" stroke="#e06391" stroke-width="2.2" stroke-linecap="round" filter="url(#gl)"/>';
+  for(let i=0;i<7;i++){const isT=wi===tp.wi&&i===tp.di,cx=X(i),cy=Y(done[i]);
+    if(isT)s+='<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#e06391" opacity="0.18"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="#e06391" stroke="#fff" stroke-width="2"/>';
+    else s+='<circle cx="'+cx+'" cy="'+cy+'" r="3.5" fill="rgba(255,255,255,.85)"/>';
+    s+='<text x="'+cx+'" y="'+(cy-11)+'" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-weight="700">'+done[i]+'</text><text x="'+cx+'" y="'+(H-6)+'" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10">'+DOW[i]+'</text>'}
+  s+='</svg>';document.getElementById("rhythmBars").innerHTML=s}
+
+function renderToday(){const tp=todayPos(),st=dayStat(tp.wi,tp.di);let h="";
+  st.tasks.forEach((t,i)=>{const d=st.done[i],s=st.skip[i];
+    h+='<div class="task"><span class="chk'+(d?" done":"")+(s?" skip":"")+'" onclick="toggle('+tp.wi+','+tp.di+','+i+',\'done\')">'+(d?"✓":"完成")+'</span><span class="task-name">'+t[0]+'</span><span class="task-h">'+t[1]+'h</span><span class="chk" onclick="toggle('+tp.wi+','+tp.di+','+i+',\'skip\')">跳过</span></div>'});
+  document.getElementById("todayList").innerHTML=h}
+
+/* 连续打卡天数 */
+function calcStreak(){
+  const s=load();let streak=0;const d=new Date();
+  // 从今天往前数
+  for(let i=0;i<365;i++){
+    const check=new Date(d);check.setDate(d.getDate()-i);
+    const wi=Math.floor(((check-CFG.start)/86400000)/7);
+    const di=Math.floor(((check-CFG.start)/86400000)%7);
+    if(wi<0||wi>=CFG.basePlan.length)break;
+    const k=dk(wi,((di%7)+7)%7);
+    const day=s[k];
+    if(day&&Object.keys(day.done).length>0)streak++;
+    else if(i===0)continue; // 今天还没打卡不算断
+    else break;
+  }
+  return streak;
+}
+
+/* N 周全景网格 */
+function renderPano(){
+  const tp=todayPos();
+  document.getElementById("panoGrid").innerHTML=CFG.basePlan.map((w,wi)=>{
+    let done=0,total=0;
+    w.days.forEach((d,di)=>{total+=d.length;done+=dayStat(wi,di).doneN});
+    const pct=total?done/total:0;
+    const cls="pano-cell"+(pct>=1?" done":"")+(wi===tp.wi?" current":"");
+    return `<div class="${cls}" title="第${wi+1}周 ${w.t||''} ${Math.round(pct*100)}%" onclick="viewWk=${wi};renderRhythm();renderWeekNav()"></div>`;
+  }).join("");
+}
+
+/* 周视图 */
+let wvWk=null;
+function openWeekView(){const tp=todayPos();wvWk=viewWk===null?tp.wi:viewWk;
+  document.getElementById("homeView").classList.add("hidden");
+  document.getElementById("weekView").classList.add("active");
+  renderWeekView()}
+function closeWeekView(){document.getElementById("homeView").classList.remove("hidden");
+  document.getElementById("weekView").classList.remove("active")}
+function wvChange(d){wvWk=Math.min(CFG.basePlan.length-1,Math.max(0,wvWk+d));renderWeekView()}
+function renderWeekView(){
+  const w=CFG.basePlan[wvWk];
+  document.getElementById("wvLabel").textContent="第 "+(wvWk+1)+" 周";
+  document.getElementById("wvTitle").textContent=w.t||("第 "+(wvWk+1)+" 周");
+  document.getElementById("wvRange").textContent="阶段 "+CFG.phases[w.ph];
+  let daysHtml="";
+  w.days.forEach((tasks,di)=>{
+    const st=dayStat(wvWk,di);
+    daysHtml+='<div class="wv-day"><div class="wv-day-head">周'+DOW[di]+'</div><div class="wv-day-tasks">';
+    tasks.forEach((t,i)=>{const d=st.done[i],s=st.skip[i];
+      daysHtml+='<div class="task"><span class="chk'+(d?" done":"")+(s?" skip":"")+'" onclick="toggle('+wvWk+','+di+','+i+',\'done\');renderWeekView()">'+(d?"✓":"完成")+'</span><span class="task-name" style="font-size:11px">'+t[0]+'</span></div>';
+    });
+    daysHtml+='</div></div>';
+  });
+  document.getElementById("wvDays").innerHTML=daysHtml;
+  // 本周统计
+  let done=0,total=0,hours=0;
+  w.days.forEach((d,di)=>{total+=d.length;const st=dayStat(wvWk,di);done+=st.doneN;hours+=st.doneH});
+  document.getElementById("wvMetrics").innerHTML=
+    '<div class="wv-metric"><b>'+Math.round(done/total*100)+'%</b><span>完成率</span></div>'+
+    '<div class="wv-metric"><b>'+Math.round(hours)+'h</b><span>已学学时</span></div>'+
+    '<div class="wv-metric"><b>'+done+'/'+total+'</b><span>任务项</span></div>';
+  // 笔记
+  const noteKey=CFG.storageKey+"-note-w"+wvWk;
+  const noteEl=document.getElementById("wvNote");
+  noteEl.value=localStorage.getItem(noteKey)||"";
+  document.getElementById("noteCnt").textContent=noteEl.value.length+" 字 · 自动保存";
+  noteEl.oninput=()=>{localStorage.setItem(noteKey,noteEl.value);
+    document.getElementById("noteCnt").textContent=noteEl.value.length+" 字 · 自动保存"};
+}
+
+/* 落后提示条 */
+function calcDelay(){
+  const tp=todayPos();let plan=0,done=0;
+  for(let wi=0;wi<=tp.wi;wi++){
+    const limit=wi<tp.wi?7:tp.di+1;
+    for(let di=0;di<limit;di++){
+      plan+=CFG.basePlan[wi].days[di].length;
+      done+=dayStat(wi,di).doneN;
+    }
+  }
+  return{plan,done,delay:Math.max(0,plan-done)};
+}
+
+function renderStats(){
+  const tp=todayPos();let tot=0,done=0,hours=0;
+  CFG.basePlan.forEach((w,wi)=>w.days.forEach((d,di)=>{
+    tot+=d.length;const st=dayStat(wi,di);done+=st.doneN;hours+=st.doneH;
+  }));
+  document.getElementById("stStreak").textContent=calcStreak();
+  document.getElementById("stHours").textContent=Math.round(hours);
+  document.getElementById("stDone").textContent=done;
+  document.getElementById("stTotal").textContent=tot;
+  const pct=tot?Math.round(done/tot*100):0;
+  document.getElementById("overallBar").style.width=pct+"%";
+  document.getElementById("playerBar").style.width=pct+"%";
+  // 落后提示条
+  const dl=calcDelay();
+  const strip=document.getElementById("devStrip");
+  if(dl.delay>0){strip.style.display="flex";
+    document.getElementById("devTxt").textContent="计划应完成 "+dl.plan+" 项 · 实际 "+dl.done+" 项 · 落后约 "+dl.delay+" 项";
+  }else{strip.style.display="none"}
+}
+
+function render(){renderPhases();renderRhythm();renderToday();renderPano();renderStats();renderWeekNav()}
+render();
+setTimeout(()=>document.querySelectorAll(".rv").forEach(e=>e.classList.add("in")),800);
+</script>
+</body>
+</html>

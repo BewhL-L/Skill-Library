@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{页面标题}}</title>
+<meta name="description" content="{{页面描述}}">
+<style>
+/* ===== CSS变量与主题 ===== */
+:root{
+  /* 深色主题（默认） */
+  --bg:#100d0a;
+  --bg-secondary:#1a1510;
+  --bg-glass:rgba(30,24,18,.62);
+  --text:#f6efe3;
+  --text-secondary:#a89880;
+  --line:rgba(246,239,227,.1);
+  --glass:blur(24px) saturate(160%);
+  --radius-sm:8px;
+  --radius-md:14px;
+  --radius-lg:20px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.2);
+  --shadow-md:0 8px 24px rgba(0,0,0,.3);
+  --shadow-lg:0 16px 48px rgba(0,0,0,.4);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.06);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --accent:#ff9a2e;
+  --accent-secondary:#4fc4b4;
+  --accent-third:#9b8cf0;
+  --accent-fourth:#e879a0;
+}
+[data-theme="light"]{
+  --bg:#faf6f0;
+  --bg-secondary:#f0e8dc;
+  --bg-glass:rgba(255,255,255,.7);
+  --text:#2a2218;
+  --text-secondary:#6b5d4a;
+  --line:rgba(42,34,24,.1);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 8px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 16px 48px rgba(0,0,0,.12);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.8);
+  --accent:#c46a10;
+  --accent-secondary:#2a9d8f;
+  --accent-third:#6c5ce7;
+  --accent-fourth:#d63384;
+}
+
+/* ===== 基础重置 ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background .4s var(--ease),color .4s var(--ease);
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ===== 导航栏 ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg-glass);
+  backdrop-filter:var(--glass);
+  border-bottom:1px solid var(--line);
+  transition:all .3s var(--ease);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.nav-logo{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}
+.nav-logo .logo-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-third));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#fff;font-weight:800;
+}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-links a{
+  padding:8px 14px;border-radius:8px;font-size:14px;
+  color:var(--text-secondary);transition:all .25s var(--ease);
+}
+.nav-links a:hover{color:var(--text);background:var(--line)}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.theme-toggle{
+  width:44px;height:24px;border-radius:12px;
+  background:var(--line);border:none;cursor:pointer;
+  position:relative;transition:background .3s;
+}
+.theme-toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--accent);transition:transform .3s var(--ease);
+}
+[data-theme="light"] .theme-toggle::after{transform:translateX(20px)}
+
+/* ===== Hero区域 ===== */
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:120px 32px 80px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,154,46,.15),transparent 50%),
+             radial-gradient(ellipse at 70% 80%,rgba(155,140,240,.12),transparent 50%);
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:1;max-width:900px}
+.hero h1{
+  font-size:clamp(32px,5vw,56px);font-weight:800;
+  line-height:1.2;margin-bottom:24px;letter-spacing:-.02em;
+}
+.hero h1 .highlight{color:var(--accent);font-weight:800}
+.hero .subtitle{
+  font-size:clamp(16px,2vw,20px);color:var(--text-secondary);
+  max-width:640px;margin:0 auto 40px;line-height:1.6;
+}
+.hero-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.stat-card{
+  background:var(--bg-glass);backdrop-filter:var(--glass);
+  border-radius:var(--radius-md);padding:20px 28px;
+  border:1px solid var(--line);box-shadow:var(--shadow-md),var(--shadow-inset);
+  min-width:140px;transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg),var(--shadow-inset)}
+.stat-card .num{font-size:32px;font-weight:700;display:block}
+.stat-card .label{font-size:13px;color:var(--text-secondary)}
+.stat-card:nth-child(1) .num{color:var(--accent)}
+.stat-card:nth-child(2) .num{color:var(--accent-secondary)}
+.stat-card:nth-child(3) .num{color:var(--accent-third)}
+.stat-card:nth-child(4) .num{color:var(--accent-fourth)}
+
+/* ===== 通用章节 ===== */
+.section{
+  max-width:1400px;margin:0 auto;padding:80px 32px;
+}
+.section-title{
+  font-size:clamp(24px,3vw,36px);font-weight:700;
+  margin-bottom:12px;letter-spacing:-.01em;
+}
+.section-subtitle{
+  font-size:16px;color:var(--text-secondary);margin-bottom:48px;
+}
+
+/* ===== 卡片网格 ===== */
+.card-grid{
+  display:grid;gap:24px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+}
+.card{
+  background:var(--bg-glass);backdrop-filter:var(--glass);
+  border-radius:var(--radius-md);padding:28px;
+  border:1px solid var(--line);box-shadow:var(--shadow-md),var(--shadow-inset);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg),var(--shadow-inset)}
+.card .card-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(255,154,46,.2),rgba(255,154,46,.05));
+}
+.card h3{font-size:18px;font-weight:600;margin-bottom:10px}
+.card p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+
+/* ===== 滚动入场动画 ===== */
+.reveal{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ===== 滚动进度条 ===== */
+.scroll-progress{
+  position:fixed;top:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-third));
+  z-index:200;transition:width .1s linear;
+}
+
+/* ===== 页脚 ===== */
+.footer{
+  text-align:center;padding:48px 32px;
+  border-top:1px solid var(--line);
+  color:var(--text-secondary);font-size:14px;
+}
+
+/* ===== 响应式 ===== */
+@media(max-width:768px){
+  .nav-inner{padding:0 16px}
+  .nav-links{display:none}
+  .hero{padding:100px 16px 60px}
+  .section{padding:60px 16px}
+  .hero-stats{gap:12px}
+  .stat-card{min-width:120px;padding:16px 20px}
+  .stat-card .num{font-size:24px}
+  .card-grid{grid-template-columns:1fr}
+}
+
+/* ===== 减少动画偏好 ===== */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 滚动进度条 -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- 导航栏 -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="logo-icon">{{图标}}</div>
+      <span>{{网站名称}}</span>
+    </div>
+    <div class="nav-links">
+      <a href="#section1">{{导航1}}</a>
+      <a href="#section2">{{导航2}}</a>
+      <a href="#section3">{{导航3}}</a>
+      <a href="#section4">{{导航4}}</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题"></button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero区域 -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <h1>{{主标题第一行}}<br><span class="highlight">{{主标题高亮行}}</span></h1>
+    <p class="subtitle">{{副标题描述}}</p>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span class="num">{{数字1}}</span>
+        <span class="label">{{标签1}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">{{数字2}}</span>
+        <span class="label">{{标签2}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">{{数字3}}</span>
+        <span class="label">{{标签3}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">{{数字4}}</span>
+        <span class="label">{{标签4}}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 章节1 -->
+<section class="section" id="section1">
+  <h2 class="section-title reveal">{{章节1标题}}</h2>
+  <p class="section-subtitle reveal">{{章节1副标题}}</p>
+  <div class="card-grid">
+    <div class="card reveal">
+      <div class="card-icon">{{图标1}}</div>
+      <h3>{{卡片1标题}}</h3>
+      <p>{{卡片1描述}}</p>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">{{图标2}}</div>
+      <h3>{{卡片2标题}}</h3>
+      <p>{{卡片2描述}}</p>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">{{图标3}}</div>
+      <h3>{{卡片3标题}}</h3>
+      <p>{{卡片3描述}}</p>
+    </div>
+  </div>
+</section>
+
+<!-- 章节2 -->
+<section class="section" id="section2">
+  <h2 class="section-title reveal">{{章节2标题}}</h2>
+  <p class="section-subtitle reveal">{{章节2副标题}}</p>
+  <div class="card-grid">
+    <div class="card reveal">
+      <div class="card-icon">{{图标4}}</div>
+      <h3>{{卡片4标题}}</h3>
+      <p>{{卡片4描述}}</p>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">{{图标5}}</div>
+      <h3>{{卡片5标题}}</h3>
+      <p>{{卡片5描述}}</p>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">{{图标6}}</div>
+      <h3>{{卡片6标题}}</h3>
+      <p>{{卡片6描述}}</p>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="footer">
+  <p>{{页脚文字}}</p>
+</footer>
+
+<script>
+/* ===== 主题切换 ===== */
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+
+/* ===== 滚动进度条 ===== */
+const scrollProgress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  scrollProgress.style.width = progress + '%';
+}, {passive: true});
+
+/* ===== 滚动入场动画 ===== */
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
+revealElements.forEach(el => revealObserver.observe(el));
+
+/* ===== 导航栏滚动效果 ===== */
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    nav.style.boxShadow = 'var(--shadow-md)';
+  } else {
+    nav.style.boxShadow = 'none';
+  }
+}, {passive: true});
+</script>
+</body>
+</html>

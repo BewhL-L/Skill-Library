@@ -1,5 +1,7 @@
 # Skill Library
 
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 一套面向**工程化学习、项目交付与前端实现**的 Skill 合集，共 **34 个**，按 `SKILL.md` 规范组织，可直接用于支持该规范的 AI 客户端（Claude Code / WorkBuddy 等）。
 
 - 每个 Skill 是一个独立目录，`SKILL.md` 为必需入口，`references/`、`scripts/`、`tests/` 按需提供。
@@ -166,4 +168,15 @@ python project-processization/scripts/validate_md.py --path README.md
 
 ## 许可
 
-未指定开源许可证。如需在他人项目中复用，请先联系作者。
+本仓库采用 **[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)**（署名—非商业性使用 4.0 国际）。
+
+| | 说明 |
+|---|---|
+| ✅ 可以 | 复制、分发、改编，用于个人学习与非商业项目 |
+| ⚠️ 必须 | 保留署名 `© 2026 BewhL-L · Skill Library`，并标注是否修改 |
+| ❌ 不可以 | 任何商业用途：付费课程、商业产品内置、以本仓库内容提供付费服务 |
+
+> **关于脚本**：CC 官方并不建议将 CC 协议用于软件。本仓库的 30 个自检脚本同样适用本许可；
+> 若需在商业项目中使用脚本，请单独联系作者获取授权。
+
+完整法律文本见 [LICENSE](LICENSE)。

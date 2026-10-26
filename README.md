@@ -1,6 +1,7 @@
 # Skill Library
 
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![Docs: CC BY-NC 4.0](https://img.shields.io/badge/Docs-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![Code: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](LICENSE-CODE)
 
 一套面向**工程化学习、项目交付与前端实现**的 Skill 合集，共 **34 个**，按 `SKILL.md` 规范组织，可直接用于支持该规范的 AI 客户端（Claude Code / WorkBuddy 等）。
 
@@ -168,15 +169,30 @@ python project-processization/scripts/validate_md.py --path README.md
 
 ## 许可
 
-本仓库采用 **[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)**（署名—非商业性使用 4.0 国际）。
+本仓库采用**双许可**，按文件路径划分：
 
-| | 说明 |
-|---|---|
-| ✅ 可以 | 复制、分发、改编，用于个人学习与非商业项目 |
-| ⚠️ 必须 | 保留署名 `© 2026 BewhL-L · Skill Library`，并标注是否修改 |
-| ❌ 不可以 | 任何商业用途：付费课程、商业产品内置、以本仓库内容提供付费服务 |
+| 范围 | 许可 | 允许 | 限制 |
+|---|---|---|---|
+| `**/scripts/**`、`**/tests/**`（可执行代码，共 30 个脚本 + 16 个测试文件） | [MIT](LICENSE-CODE) | 商用、修改、闭源分发、再许可 | 保留版权与许可声明 |
+| 其余全部（`SKILL.md`、`references/`、`templates/`、文档与示例文本） | [CC BY-NC 4.0](LICENSE) | 复制、分发、改编，用于非商业场景 | 署名 + 标注修改 + 禁止商业用途 |
 
-> **关于脚本**：CC 官方并不建议将 CC 协议用于软件。本仓库的 30 个自检脚本同样适用本许可；
-> 若需在商业项目中使用脚本，请单独联系作者获取授权。
+**为什么要分开**：Creative Commons 官方不建议将 CC 协议用于软件——它没有处理专利授权、
+源码分发与责任限制。而 `SKILL.md` 与 `references/` 本质是"内容"，用 CC 更贴合。
 
-完整法律文本见 [LICENSE](LICENSE)。
+**署名格式**（复制文档内容时使用）：
+
+```
+© 2026 BewhL-L · Skill Library
+Licensed under CC BY-NC 4.0 (docs) / MIT (code)
+```
+
+**商用边界**：脚本可直接按 MIT 用于公司项目；若要把**文档内容**内置进商业产品或付费课程，
+需单独联系作者授权。
+
+完整文本：[LICENSE](LICENSE)（CC BY-NC 4.0，408 行官方文本）、[LICENSE-CODE](LICENSE-CODE)（MIT）。
+
+> GitHub 侧栏只会显示一个许可证——`LICENSE` 为主要文件，因此显示为 CC BY-NC 4.0；
+> 代码部分以 `LICENSE-CODE` 为准。
+>
+> 各 Skill 目录内的 `LICENSE` 是**指路文件**（指向根目录两份许可），不是独立授权；
+> 原先脚手架自动生成的单目录 MIT 已废弃，避免子目录许可与仓库许可冲突。

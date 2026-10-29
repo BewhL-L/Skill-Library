@@ -96,3 +96,14 @@ def test_main_exit_codes(tmp_path: Path, monkeypatch) -> None:
 
     (tmp_path / "README.md").write_text("```\npytest -q  # 7 passed\n```\n", encoding="utf-8")
     assert check_docs.main() == 1
+
+
+def test_check_endpoints_accepts_method_prefix() -> None:
+    """README 常写 `POST /api/kb`：方法前缀与 query 不该导致漏检（曾整类跳过）。"""
+    routes = {"/api/kb", "/api/chat"}
+
+    assert check_docs.check_endpoints("`POST /api/kb`、`GET /api/chat?top_k=5`", routes) == []
+
+    errors = check_docs.check_endpoints("`POST /api/gone`", routes)
+    assert errors and "gone" in errors[0]
+

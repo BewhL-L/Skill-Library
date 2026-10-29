@@ -96,7 +96,11 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 | `validate_md.py` | 围栏状态机校验：H1 唯一、层级不跳、围栏闭合、表格列数、双链 | `--path README.md --require-frontmatter` |
 | `verify_zero_cut.py` | 原文零删减比对：精确/宽松/疑似删减三级，差异逐行列出 | `--original 原.md --new 新.md --allow-note "..."` |
 | `make_toc.py` | 生成 GitHub slug 折叠目录（与 GitHub/Obsidian 一致），可写回 | `--path README.md --start .. --end .. --details --write` |
-| `check_docs.py` | 文档与代码一致性：测试数、路径、废弃表述、私有文件、接口清单 | `--root . --tests backend/tests --openapi openapi.json` |
+| `check_docs.py` | 文档与代码一致性：测试数、路径、废弃表述、私有文件、接口清单（兼容 `POST /api/x` 写法，支持 `--json`） | `--root . --tests backend/tests --openapi openapi.json` |
+
+> 落地到具体项目时**不要 fork 逻辑**：把本文件复制到 `<项目>/backend/scripts/check_docs.py`，
+> 只在顶部保留一段「项目本地配置」（废弃表述、私有文件、默认根目录），其余函数与上游保持一致。
+> 这样上游修的问题能靠一次 diff 回灌到所有项目；逻辑各改各的，两份脚本就会悄悄分叉。
 
 > 关键易错点：校验标题**必须用代码围栏状态机**——代码块里的 `#` 是 bash 注释，朴素正则会误判出假 H1。这几个脚本已内置状态机，直接调用即可。
 

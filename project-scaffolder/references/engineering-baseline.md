@@ -87,6 +87,10 @@ CREATE INDEX ix_docs_kb_status_created ON documents(kb_id, status, created_at);
 | 已安装 `project-processization` | 直接复制其 `scripts/check_docs.py`，**不改逻辑**；上游改了再同步 |
 | 未安装 | 自实现最小版（标准库，约 80 行），只做四类断言 |
 
+> 复制后允许追加**一段项目本地配置**（废弃表述清单、私有文件清单、默认根目录），
+> 但**校验逻辑不要改**。上游修掉的问题——例如 `POST /api/x` 这种带方法前缀的接口引用
+> 曾被整类跳过——才能靠一次 diff 回灌到所有项目；逻辑各改各的，两份脚本会悄悄分叉。
+
 最小版实现要点：
 
 1. 测试数：`ast` 解析 `tests/**/test_*.py` 的 `def test_`，模块级 `pytestmark = pytest.mark.skip` 的计入总数不计入 passed；
@@ -126,6 +130,19 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 | 令牌比较 | 常量时间 | 防时序侧信道 |
 
 验收：关掉开关，对应接口返回 503/404，而不是"静默降级为可用"。
+
+### 3.7 容器编排约定
+
+生成 `docker-compose.yml` 时按这四条写，能避开三类"不报错"的坑：
+
+| 约定 | 写法 | 原因 |
+|---|---|---|
+| 不设 `container_name` | 留空，用 Compose 生成的 `<项目>-<服务>-<序号>` | 写死了就无法 `--scale`，也不能用另一个项目名并排跑 dev/prod |
+| 端口绑回环 | `"127.0.0.1:5432:5432"` | 裸写 `"5432:5432"` 是对全网卡暴露，而 Postgres/Redis/Qdrant 默认都没鉴权 |
+| 被依赖服务必须有 healthcheck | `depends_on: {db: {condition: service_healthy}}`，且 `db` 里确有 `healthcheck` | 缺 healthcheck 时 Compose 直接报 `container xxx has no healthcheck configured`；只写 `service_started` 等于"进程起了就算就绪" |
+| bind mount 前先校验路径 | 启动脚本断言 `.env` 是**文件**、`uploads/data` 是**目录** | 源路径不存在时 Docker 会静默建空目录：`.env` 变目录会让 `env_file` 报 `is a directory`，数据目录变空目录则完全无报错，表现为"上传的文件消失" |
+
+验收：`docker compose config` 通过；`docker compose up -d` 后 `docker compose ps` 全部显示 `(healthy)`。
 
 ## 4. 反模式：假完备
 

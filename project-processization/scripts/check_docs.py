@@ -44,8 +44,22 @@ DEFAULT_PRIVATE = {
 }
 
 ROOTED_PREFIXES = ("backend/", "frontend/", "docker/", ".github/", "scripts/")
+METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS")
 BACKTICK = re.compile(r"`([^`\n]+)`")
 BRACES = re.compile(r"\{[^}]+\}")
+
+
+def _endpoint_of(token: str) -> str:
+    """把文档里的写法归一成纯路径。
+
+    `POST /api/chat`      -> `/api/chat`（README 里绝大多数是这个写法）
+    `/api/chat?top_k=5`   -> `/api/chat`
+    """
+    text = token.strip()
+    head, _, rest = text.partition(" ")
+    if rest and head.upper() in METHODS:
+        text = rest.strip()
+    return text.split("?")[0].strip()
 
 
 def _is_skip_decorator(node: ast.AST) -> bool:
@@ -163,9 +177,10 @@ def check_endpoints(text: str, routes: set) -> list:
         return []
     errors, seen = [], set()
     for token in BACKTICK.findall(text):
-        if not token.startswith(("/api/", "/a2a/", "/embed/")):
+        endpoint = _endpoint_of(token)
+        if not endpoint.startswith(("/api/", "/a2a/", "/embed/")):
             continue
-        doc_path = BRACES.sub("{}", token.strip().rstrip("/"))
+        doc_path = BRACES.sub("{}", endpoint.rstrip("/"))
         if doc_path in seen:
             continue
         seen.add(doc_path)

@@ -151,8 +151,11 @@ mkdir -p .workbuddy/skills && cp -r Skill-Library/project-scaffolder .workbuddy/
 三个脚本都是纯标准库、跨平台、无网络请求：
 
 ```bash
-# 文档与代码一致性（测试数 / 路径 / 废弃表述 / 私有文件）
+# 文档与代码一致性（测试数 / 路径 / 废弃表述 / 私有文件 / 接口）
 python project-processization/scripts/check_docs.py --root <你的项目>
+
+# 机器可读输出，便于 CI 归档或二次处理
+python project-processization/scripts/check_docs.py --root <你的项目> --json
 
 # 工程底座七项自检（迁移 / 索引 / CI / 文档 / 私有边界 / 默认安全 / 假完备）
 python project-scaffolder/scripts/check_baseline.py --root <你的项目>
@@ -160,6 +163,9 @@ python project-scaffolder/scripts/check_baseline.py --root <你的项目>
 # Markdown 结构校验（H1 唯一、围栏闭合、层级不跳）
 python project-processization/scripts/validate_md.py --path README.md
 ```
+
+接口校验兼容 README 常见写法 `POST /api/kb`（方法前缀会被归一化），也支持 `--routes` 传入路由清单、
+`--openapi` 读取导出文件，二者都不给时才退回导入 app 取路由表。
 
 ## 设计原则
 

@@ -4,6 +4,10 @@
 
 ## [0.2.2] — 2026-11-02
 
+### 新增
+
+- 新增 `hermes-portability/.gitattributes`：本目录的 `*.sh`、`*.md` 与其余文本一律强制 `eol=lf`。本仓库 `core.autocrlf=true`，若不作声明，检出时 `.sh` 会变成 CRLF，shebang 成为 `#!/usr/bin/env bash^M`，在 WSL 里直接报 `bad interpreter`——而本技能的四个脚本正是要在 WSL 执行。已用 `git add --renormalize` + `git check-attr eol` 复核为 `lf`。
+
 ### 文档
 
 - `SKILL.md` 新增「**恢复后必查 5 项**」：容器 restart 策略、`MEM0_TELEMETRY`、`sync_max_chars`、嵌入维度与 `memories.vector(1024)` 的绑定、`ALL_MEMORIES_LIMIT=1000`。这五项错了都不会报错，只会让记忆"悄悄不工作"——实测曾因 restart 策略缺失，服务停摆 13 小时无人察觉。

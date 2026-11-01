@@ -1,0 +1,6 @@
+# plugin	sha	origin
+mem0	-	(not a git repo; re-run with --with-plugins to copy the code)
+minions	a078797	https://gh-proxy.com/https://github.com/agent37-platform/minions.git
+oh-my-hermes	3b06e33	https://gh-proxy.com/https://github.com/witt3rd/oh-my-hermes.git
+open-design	f29b1d6	https://github.com/nexu-io/open-design.git
+superpowers	bb92a77	https://gh-proxy.com/https://github.com/obra/superpowers.git

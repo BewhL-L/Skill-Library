@@ -1,0 +1,17 @@
+{
+  "tool": "hermes-portability",
+  "created_at": "2026-11-01T23:30:00+08:00",
+  "tier": "state",
+  "source_home": "/home/luo/.hermes",
+  "host": "memo-dev",
+  "hermes_version": "unknown",
+  "mem0_service": true,
+  "file_count": 729,
+  "total_bytes": 21600000,
+  "files": [
+    { "path": "files/hermes/config.yaml", "size": 1574 },
+    { "path": "files/hermes/plugins/mem0/__init__.py", "size": 4096 },
+    { "path": "files/hermes/memories/MEMORY.md", "size": 1439 },
+    { "path": "files/hermes/state.db", "size": 5824512 }
+  ]
+}

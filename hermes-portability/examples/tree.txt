@@ -1,0 +1,29 @@
+hermes-20261101-2330/
+├── manifest.json
+├── RESTORE.md
+├── plugins.txt
+├── mem0-service/
+│   ├── docker-compose.yaml
+│   ├── .env.example
+│   ├── containers.txt
+│   └── mem0_app.sql.gz
+└── files/hermes/
+    ├── config.yaml
+    ├── SOUL.md
+    ├── channel_directory.json
+    ├── .env.example
+    ├── cron/
+    ├── desktop-plugins/
+    ├── hooks/
+    ├── skills/
+    │   ├── apple/
+    │   ├── devops/
+    │   ├── research/
+    │   └── ...
+    ├── plugins/
+    │   └── mem0/
+    ├── memories/
+    ├── sessions/
+    ├── state.db
+    ├── kanban.db
+    └── shared-state.db

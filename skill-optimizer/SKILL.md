@@ -113,7 +113,7 @@ python scripts/check-install-sync.py ../your-skill      # 加 --json 便于接�
 **两个反直觉的坑**：
 
 1. **备份不能留在技能根目录**。`<name>.bak-<时间戳>` 里同样有 `SKILL.md`，会被多数 agent 当成**第二个同名 Skill** 扫出来；应放到技能树之外（如 `%LOCALAPPDATA%\SkillLinkBackups`）。
-2. **安装位可能含 agent 写入的元数据**（如 `_user_meta.json`）。改成链接后该文件会落到源码目录，记得加进 `.gitignore`，否则每次审计都会看到"副本独有"的噪声。检查脚本已把这类平台元数据加入忽略列表。
+2. **安装位可能含 agent 写入的元数据**（如 `_user_meta.json`）。改成链接后该文件会落到源码目录，记得加进 `.gitignore`，否则每次审计都会看到"副本独有"的噪声。检查脚本已把这类平台元数据加入忽略列表。它同时也带来了一个换机注意点：**元数据不进版本库，克隆仓库后不会有**，需在该 agent 里重新导入一次技能才能再生——丢的只是 `source` / `installedAt` 记账信息，不影响技能加载与运行。
 
 ---
 

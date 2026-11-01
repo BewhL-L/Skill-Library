@@ -1,6 +1,6 @@
 ---
 name: hermes-portability
-version: 0.3.0
+version: 0.3.1
 description: Backup, migrate, and rebuild a complete Hermes (hermes-agent) installation on WSL — config, skills, third-party plugins (including mem0), memories, sessions, and the external mem0 Docker stack. 当用户提到"换电脑/重装 WSL/重装系统 要迁移 Hermes""备份 ~/.hermes""恢复 Hermes 环境""Hermes 起不来、少了什么""mem0 插件怎么跟着走"时使用；也支持只导出配置做增量备份、或在新机器上一条命令完成安装+还原+体检。
 agent_created: true
 ---
@@ -116,6 +116,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "$SK\scripts\link-skill.ps1"
 - 默认**只处理已存在的副本**，不会把技能装进没装过它的 agent；确需安装时加 `-Install`；
 - 实体目录先移到 `%LOCALAPPDATA%\SkillLinkBackups\<name>-<时间戳>` 再建链接——备份**不能**留在技能根目录，否则会被当成第二个同名技能；
 - 重复执行是幂等的（已正确链接则报 `already-linked`）；WSL / Linux 侧等价命令：`ln -sfn <源码目录> <安装位>`。
+- **安装位里的平台元数据**（如 WorkBuddy 的 `_user_meta.json`）：改成链接后它会落在源码目录，需加进 `.gitignore`；这份元数据不进版本库，**换机器克隆仓库后不会有**，在新机器上重新导入一次技能即可再生——丢失的只是 `source` / `installedAt` 这类记账信息，不影响加载与运行。
 
 **导出**
 

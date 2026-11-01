@@ -106,7 +106,7 @@ class SkillAuditor:
             score -= 50
             issues.append({"severity": "critical", "message": "缺少 SKILL.md 核心文档"})
         else:
-            content = skill_md.read_text(encoding="utf-8", errors="ignore")
+            content = skill_md.read_text(encoding="utf-8-sig", errors="ignore")
             # 检查 frontmatter
             if not content.startswith("---"):
                 score -= 20
@@ -126,7 +126,7 @@ class SkillAuditor:
         for f in ["SKILL.md", "README.md", "pyproject.toml", "package.json"]:
             fp = self.skill_path / f
             if fp.exists():
-                content = fp.read_text(encoding="utf-8", errors="ignore")
+                content = fp.read_text(encoding="utf-8-sig", errors="ignore")
                 if re.search(r'v?\d+\.\d+\.\d+', content):
                     has_version = True
                     break
@@ -173,7 +173,7 @@ class SkillAuditor:
         # 检查文档内容质量
         readme = self.skill_path / "README.md"
         if readme.exists():
-            content = readme.read_text(encoding="utf-8", errors="ignore")
+            content = readme.read_text(encoding="utf-8-sig", errors="ignore")
             if len(content) < 500:
                 score -= 10
                 issues.append({"severity": "low", "message": "README.md 内容过短（<500字）"})
@@ -201,7 +201,7 @@ class SkillAuditor:
             if any(part in skip_dirs for part in md_file.parts):
                 continue
             try:
-                content = md_file.read_text(encoding="utf-8", errors="ignore")
+                content = md_file.read_text(encoding="utf-8-sig", errors="ignore")
             except Exception:
                 continue
 
@@ -304,7 +304,7 @@ class SkillAuditor:
                 if any(part in [".venv", "venv", "__pycache__", "node_modules"] for part in py_file.parts):
                     continue
                 try:
-                    content = py_file.read_text(encoding="utf-8", errors="ignore")
+                    content = py_file.read_text(encoding="utf-8-sig", errors="ignore")
 
                     # === 新增：py_compile 语法验证 ===
                     try:
@@ -391,7 +391,7 @@ class SkillAuditor:
                 # 检查测试内容
                 has_assert = False
                 for tf in test_files[:5]:
-                    content = tf.read_text(encoding="utf-8", errors="ignore")
+                    content = tf.read_text(encoding="utf-8-sig", errors="ignore")
                     if "assert" in content:
                         has_assert = True
                         break
@@ -478,7 +478,7 @@ class SkillAuditor:
         for py_file in py_files:
             if any(part in [".venv", "venv", "__pycache__"] for part in py_file.parts):
                 continue
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            content = py_file.read_text(encoding="utf-8-sig", errors="ignore")
             if "--help" in content or "add_argument" in content:
                 has_help = True
             if "argparse" in content:
@@ -510,14 +510,14 @@ class SkillAuditor:
 
         if py_files:
             # 检查是否有主入口
-            has_main = any("if __name__" in f.read_text(encoding="utf-8", errors="ignore") for f in py_files)
+            has_main = any("if __name__" in f.read_text(encoding="utf-8-sig", errors="ignore") for f in py_files)
             if not has_main:
                 score -= 15
                 issues.append({"severity": "low", "message": "未找到主入口函数（if __name__ == '__main__'）"})
 
             # 检查单文件过大
             for py_file in py_files:
-                lines = len(py_file.read_text(encoding="utf-8", errors="ignore").splitlines())
+                lines = len(py_file.read_text(encoding="utf-8-sig", errors="ignore").splitlines())
                 if lines > 500:
                     score -= 10
                     issues.append({"severity": "low", "message": f"文件过大: {py_file.name} ({lines}行)，建议拆分"})
@@ -538,7 +538,7 @@ class SkillAuditor:
             score = 0
             issues.append({"severity": "critical", "message": "缺少 SKILL.md"})
         else:
-            content = skill_md.read_text(encoding="utf-8", errors="ignore")
+            content = skill_md.read_text(encoding="utf-8-sig", errors="ignore")
 
             # 检查核心结构模块
             structure_checks = {
@@ -584,7 +584,7 @@ class SkillAuditor:
             score = 0
             issues.append({"severity": "critical", "message": "缺少 SKILL.md"})
         else:
-            content = skill_md.read_text(encoding="utf-8", errors="ignore")
+            content = skill_md.read_text(encoding="utf-8-sig", errors="ignore")
 
             # 从 description 提取触发场景
             desc_match = re.search(r'description:\s*(.+?)(?:\n---|\n$)', content, re.DOTALL)
@@ -629,7 +629,7 @@ class SkillAuditor:
             score = 0
             issues.append({"severity": "critical", "message": "缺少 SKILL.md"})
         else:
-            content = skill_md.read_text(encoding="utf-8", errors="ignore")
+            content = skill_md.read_text(encoding="utf-8-sig", errors="ignore")
 
             # 检查输出规范模块
             if not re.search(r'(输出规范|输出要求|输出格式|质量标准|质量检查|检查清单|验收标准)', content):
@@ -672,7 +672,7 @@ class SkillAuditor:
                 shallow_files = []
                 for rf in ref_files:
                     try:
-                        lines = len(rf.read_text(encoding="utf-8", errors="ignore").splitlines())
+                        lines = len(rf.read_text(encoding="utf-8-sig", errors="ignore").splitlines())
                         total_lines += lines
                         if lines < 50:
                             shallow_files.append(f"{rf.name}({lines}行)")
@@ -690,7 +690,7 @@ class SkillAuditor:
                 # 检查 SKILL.md 是否引用了 references
                 skill_md = self.skill_path / "SKILL.md"
                 if skill_md.exists():
-                    content = skill_md.read_text(encoding="utf-8", errors="ignore")
+                    content = skill_md.read_text(encoding="utf-8-sig", errors="ignore")
                     if "references/" not in content and "参考文档" not in content:
                         score -= 15
                         issues.append({"severity": "medium", "message": "SKILL.md 未引用 references/ 目录中的文档，建议在相关章节添加引用链接"})

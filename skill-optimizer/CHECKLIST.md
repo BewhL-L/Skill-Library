@@ -85,6 +85,12 @@
 - [ ] 支持 --verbose 详细日志
 - [ ] 输出格式统一（成功/警告/错误）
 
+### 部署一致性（4 项）
+- [ ] 已运行 `scripts/check-install-sync.py`，无 `STALE` / `MISMATCH`
+- [ ] 安装位是指向源码的链接（junction / symlink），或已确认与源码逐文件一致
+- [ ] 旧副本备份不在技能根目录（否则会被当成第二个同名 Skill）
+- [ ] 安装位中 agent 写入的元数据（如 `_user_meta.json`）已加入 `.gitignore`
+
 ---
 
 ## 🟡 P2 - 建议完成（专业提升）
@@ -235,6 +241,6 @@ python skill-opt.py audit --path ./my-skill
 
 ---
 
-> **最后更新**：2026-08-31
+> **最后更新**：2026-11-02
 >
-> **检查项总数**：101 项
+> **检查项总数**：105 项

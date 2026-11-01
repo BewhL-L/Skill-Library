@@ -88,6 +88,33 @@ description: Skill 工程化优化器，基于 25 轮实战优化经验，提供
 - 测试数据和 Mock
 - 覆盖率配置
 
+### 5. 部署一致性检查（check-install-sync，v1.9 新增）
+
+Skill 通常有两份：你编辑的源码目录、agent 实际加载的安装目录。**改源码不会影响副本**——这是"优化完了却没生效"最常见的假象，也是最容易被审计漏掉的一项。
+
+```bash
+python scripts/check-install-sync.py ../your-skill      # 加 --json 便于接入流水线
+```
+
+自动扫描 `~/.workbuddy/skills`、`~/.claude/skills`、`~/.codex/skills` 等已知根目录，以及 `~/<任意目录>/skills`，逐个判定：
+
+| 状态 | 含义 | 处理 |
+|------|------|------|
+| `LINKED` | 安装位是指向源码的链接 | 无需处理，推荐形态 |
+| `IN_SYNC` | 实体目录，逐文件一致 | 可保留；建议改链接，避免下次漂移 |
+| `STALE` | 实体目录，内容不同 | 打印差异文件，据此决定同步或改链接 |
+| `MISMATCH` | 是链接，但指向别处 | 重新指向当前源码 |
+| `ABSENT` | 该根目录没有此 Skill | 忽略 |
+
+退出码：`0` 正常，`1` 存在 `STALE`/`MISMATCH`，`2` 路径无效——可直接接入 CI 或提交前钩子。
+
+**固化为链接**（推荐，一劳永逸）：Windows 用 `hermes-portability` 技能的 `scripts/link-skill.ps1`（junction 不需要管理员权限，对读取方透明）；Linux/WSL 等价 `ln -sfn <源码> <安装位>`。
+
+**两个反直觉的坑**：
+
+1. **备份不能留在技能根目录**。`<name>.bak-<时间戳>` 里同样有 `SKILL.md`，会被多数 agent 当成**第二个同名 Skill** 扫出来；应放到技能树之外（如 `%LOCALAPPDATA%\SkillLinkBackups`）。
+2. **安装位可能含 agent 写入的元数据**（如 `_user_meta.json`）。改成链接后该文件会落到源码目录，记得加进 `.gitignore`，否则每次审计都会看到"副本独有"的噪声。检查脚本已把这类平台元数据加入忽略列表。
+
 ---
 
 ## 🚀 25 轮优化方法论

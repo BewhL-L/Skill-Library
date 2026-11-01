@@ -1,5 +1,25 @@
 # 更新日志
 
+## [1.9.0] - 2026-11-02
+
+### ✨ 新功能
+
+- **新增 `scripts/check-install-sync.py`**：检查同一个 Skill 在各 agent 安装位是否存在旧副本或错误链接。自动扫描 `~/.workbuddy/skills`、`~/.claude/skills`、`~/.codex/skills` 等已知根目录与 `~/<任意>/skills`，逐处给出 `LINKED` / `IN_SYNC` / `STALE` / `MISMATCH` / `ABSENT`，`STALE` 时列出差异文件。
+  - 退出码语义化：`0` 正常、`1` 有 `STALE`/`MISMATCH`、`2` 路径无效，可直接接入 CI 或提交前钩子。
+  - 只读诊断，不修改任何文件；`--json` 供流水线消费。
+
+### 📄 文档
+
+- SKILL.md 新增「5. 部署一致性检查」：状态表、修复建议，以及两个反直觉的坑——备份留在技能根目录会被当成第二个同名 Skill；安装位里的 `_user_meta.json` 改链接后会落进源码目录，需 `.gitignore`。
+- CHECKLIST.md 新增 P1「部署一致性（4 项）」，检查项总数 101 → **105**。
+
+### 🧭 背景
+
+- 起因是 2026-11-02 的一次实战：Skill 源码改完、agent 加载的仍是旧副本，而**两边看起来都正常**——源码目录对、安装目录也在、文件都能读。根因是安装位为独立拷贝而非链接，审计维度里没有任何一项覆盖它。
+- 同一批实战还沉淀了固化方案：Windows 用 junction（无需管理员权限），Linux/WSL 用 `ln -sfn`，并明确了备份位置与幂等语义（详见 `hermes-portability` 技能的 `scripts/link-skill.ps1`）。
+
+---
+
 ## [1.8.1] - 2026-10-09
 
 ### 🏗️ 工程化

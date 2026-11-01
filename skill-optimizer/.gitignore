@@ -59,3 +59,8 @@ diff-report.json
 *.tmp
 *.bak
 *.old
+
+# 平台写入的安装元数据：安装位改为 junction 后，该文件会落在这里
+_user_meta.json
+.install-metadata.json
+.install-metadata.json.lock

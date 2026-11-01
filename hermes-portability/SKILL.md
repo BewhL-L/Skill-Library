@@ -1,6 +1,6 @@
 ---
 name: hermes-portability
-version: 0.2.2
+version: 0.3.0
 description: Backup, migrate, and rebuild a complete Hermes (hermes-agent) installation on WSL — config, skills, third-party plugins (including mem0), memories, sessions, and the external mem0 Docker stack. 当用户提到"换电脑/重装 WSL/重装系统 要迁移 Hermes""备份 ~/.hermes""恢复 Hermes 环境""Hermes 起不来、少了什么""mem0 插件怎么跟着走"时使用；也支持只导出配置做增量备份、或在新机器上一条命令完成安装+还原+体检。
 agent_created: true
 ---
@@ -103,6 +103,20 @@ agent_created: true
 SK=/mnt/c/Users/23981/.workbuddy/skills/hermes-portability
 ```
 
+**让所有 agent 读到同一份源码**
+
+技能通常存在两份：你编辑的源码目录、agent 加载的安装目录。改一份，另一份不会变——这是"改了却没生效"最常见的原因。本技能自带脚本把安装位换成 **junction**（Windows 下无需管理员权限，对读取方透明），此后源码即唯一事实源：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "$SK\scripts\link-skill.ps1" -DryRun   # 先看会动谁
+powershell -NoProfile -ExecutionPolicy Bypass -File "$SK\scripts\link-skill.ps1"           # 只改已安装的副本
+```
+
+- 自动扫描 `~\*\skills` 与常见 agent 目录（`.workbuddy` / `.claude` / `.codex` / `.agents` / `.cc-switch` / `Doubao`…），不写死单一工具；
+- 默认**只处理已存在的副本**，不会把技能装进没装过它的 agent；确需安装时加 `-Install`；
+- 实体目录先移到 `%LOCALAPPDATA%\SkillLinkBackups\<name>-<时间戳>` 再建链接——备份**不能**留在技能根目录，否则会被当成第二个同名技能；
+- 重复执行是幂等的（已正确链接则报 `already-linked`）；WSL / Linux 侧等价命令：`ln -sfn <源码目录> <安装位>`。
+
 **导出**
 
 ```bash
@@ -150,6 +164,7 @@ bash "$SK/scripts/verify.sh"
 - [ ] `restore.sh` 对非空目标默认拒绝，`--force` 会先改名保留
 - [ ] `verify.sh` 能发现"config 启用了但插件没装"
 - [ ] mem0 四处齐全（配置/插件/键名/pg_dump）
+- [ ] 安装位是 junction（`(Get-Item <安装位>).LinkType` 为 `Junction`），或已用 `scripts/link-skill.ps1` 同步并 `diff -rq` 校验
 - [ ] 脚本只用 bash + python3 + tar + gzip，不引入额外依赖
 
 ## 关键约束
@@ -169,6 +184,7 @@ bash "$SK/scripts/verify.sh"
 | `scripts/restore.sh` | 还原（`--from`、`--to`、`--force`） |
 | `scripts/bootstrap.sh` | 新机器一条命令：安装 + 还原 + 体检 |
 | `scripts/verify.sh` | 只读体检，`OK/WARN/FAIL` |
+| `scripts/link-skill.ps1` | 把各 agent 的安装位换成指向源码的 junction（`-DryRun` / `-Install`） |
 | `references/inventory.md` | `~/.hermes` 每个目录该不该迁 |
 | `references/hermes-agent-tree.md` | `hermes-agent/` 源码目录构成、为何排除 `.venv`/`.git`、如何重建 |
 | `references/secrets.md` | 密钥清单、mem0 专项、补齐与轮换 |

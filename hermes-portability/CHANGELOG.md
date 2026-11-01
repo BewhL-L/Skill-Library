@@ -2,6 +2,17 @@
 
 遵循语义化版本：`MAJOR.MINOR.PATCH`。技能类项目以"行为变化"为 MINOR，以"文档/措辞"为 PATCH。
 
+## [0.3.0] — 2026-11-02
+
+### 新增
+
+- **`scripts/link-skill.ps1`**：把各 agent 的 `skills/<name>` 换成指向源码目录的 **junction**，解决"改了源码、加载的还是旧副本"。自动扫描 `~\*\skills` 与常见 agent 目录（不写死 WorkBuddy），默认只处理**已存在**的副本，`-Install` 才新建；实体目录先移到 `%LOCALAPPDATA%\SkillLinkBackups\` 再建链——备份留在技能根目录会被当成第二个同名技能。幂等：已正确链接报 `already-linked`。WSL/Linux 等价 `ln -sfn`。
+- `SKILL.md`「工作流程」新增该机制的使用说明，并在「质量标准」加一条交付前自查：确认安装位 `LinkType` 为 `Junction`，或已同步且 `diff -rq` 无差异。
+
+### 修复
+
+- 本技能在 WorkBuddy 下的安装副本现已改为 junction（旧副本备份在 `%LOCALAPPDATA%\SkillLinkBackups\hermes-portability-20261102-010420`），后续不再需要手工 `cp` 同步。
+
 ## [0.2.2] — 2026-11-02
 
 ### 新增

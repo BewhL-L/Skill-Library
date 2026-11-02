@@ -1,0 +1,27 @@
+{
+  "_comment": "gate 规则。pattern 为正则；allow 里的路径用 glob。改完跑 python tests/selftest.py 验证不回归。",
+  "max_file_bytes": 5242880,
+  "allow": [
+    "tests/fixtures/**",
+    "**/*.example",
+    "**/.env.example"
+  ],
+  "deny_paths": [
+    { "id": "env-file", "pattern": "(^|/)\\.env(\\.|$)", "why": "环境文件常含密钥，应以 .env.example 入库" },
+    { "id": "secret-name", "pattern": "(^|/)[^/]*(secret|credential)[^/]*\\.(json|ya?ml|env|ini|toml|txt|py|sh|ps1|js|ts|cfg|conf|properties|key|pem)$", "why": "文件名含 secret/credential" },
+    { "id": "key-file", "pattern": "\\.(key|pem|p12|pfx|jks)$", "why": "私钥/证书文件" },
+    { "id": "ssh-key", "pattern": "(^|/)id_(rsa|ed25519|ecdsa)(\\.pub)?$", "why": "SSH 私钥" },
+    { "id": "private-doc", "pattern": "(^|/)(项目学习指导书|内部|私有)", "why": "私有文档不应进入公开仓库" },
+    { "id": "agent-state", "pattern": "(^|/)\\.workbuddy/", "why": "agent 工作区状态，属于本地运行数据" },
+    { "id": "vendor-dir", "pattern": "(^|/)(node_modules|__pycache__|\\.venv)/", "why": "依赖与缓存目录" }
+  ],
+  "content": [
+    { "id": "openai-key", "pattern": "sk-[A-Za-z0-9]{20,}", "why": "疑似 OpenAI/SiliconFlow 密钥" },
+    { "id": "github-token", "pattern": "gh[pousr]_[A-Za-z0-9]{30,}", "why": "疑似 GitHub token" },
+    { "id": "github-pat", "pattern": "github_pat_[A-Za-z0-9_]{20,}", "why": "疑似 GitHub fine-grained token" },
+    { "id": "aws-key", "pattern": "AKIA[0-9A-Z]{16}", "why": "疑似 AWS Access Key" },
+    { "id": "private-key-block", "pattern": "-----BEGIN [A-Z ]*PRIVATE KEY-----", "why": "私钥块" },
+    { "id": "credentialed-url", "pattern": "[a-z][a-z0-9+.\\-]*://[^/\\s:@]+:[^/\\s@]+@", "why": "URL 内嵌用户名密码（数据库/代理连接串）" },
+    { "id": "bearer-literal", "pattern": "(?i)(api[_-]?key|access[_-]?token|secret[_-]?key)\\s*[:=]\\s*['\"][A-Za-z0-9_\\-]{16,}['\"]", "why": "硬编码的密钥字面量" }
+  ]
+}

@@ -2,6 +2,12 @@
 
 遵循语义化版本：`MAJOR.MINOR.PATCH`。技能类项目以"行为变化"为 MINOR，以"文档/措辞"为 PATCH。
 
+## [0.3.3] — 2026-11-02
+
+### 文档
+
+- `SKILL.md` frontmatter 补 `title: Hermes 迁移与备份`，消除 `validate_md.py` 的 `[low]` 提示（与 project-processization / project-scaffolder 的同类修正保持一致；三个 Skill 现在都过同一道 Markdown 校验）。
+
 ## [0.3.2] — 2026-11-02
 
 ### 文档

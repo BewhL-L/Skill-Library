@@ -1,6 +1,7 @@
 ---
 name: hermes-portability
-version: 0.3.2
+title: Hermes 迁移与备份
+version: 0.3.3
 description: Backup, migrate, and rebuild a complete Hermes (hermes-agent) installation on WSL — config, skills, third-party plugins (including mem0), memories, sessions, and the external mem0 Docker stack. 当用户提到"换电脑/重装 WSL/重装系统 要迁移 Hermes""备份 ~/.hermes""恢复 Hermes 环境""Hermes 起不来、少了什么""mem0 插件怎么跟着走"时使用；也支持只导出配置做增量备份、或在新机器上一条命令完成安装+还原+体检。
 agent_created: true
 ---

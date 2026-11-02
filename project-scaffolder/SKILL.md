@@ -110,13 +110,13 @@ description: 项目全周期生成器。当用户想从零开始做任意类型�
    - **核心功能同步生成测试**：生成后端路由时，为核心路由（认证、CRUD、业务逻辑）同步生成 pytest 测试文件；测试应覆盖正常流程和边界情况
    - **新增功能必须同步更新文档**：每次新增/修改功能模块后，必须同步更新 README.md（技术栈/功能列表/页面数/模型数）和《项目全景总结与行动指南》（总览表/分工说明/操作指引），禁止出现"代码已更新但文档还写旧内容"
    - **周边标配功能同步生成**（所有项目必做）：生成核心功能时，必须对照 [references/content-completeness.md](references/content-completeness.md) 的标配功能清单，同步生成 P1 级周边功能；周边功能不是"后续迭代"，而是"首次交付就包含"；每个周边功能必须完整实现（后端+前端+数据模型），不允许"留空"或"TODO"；示例：社交平台生成"发图+点赞"时，必须同步生成收藏、搜索、通知、评论点赞、个人主页等周边功能
-   - **工程底座六件套同步生成**（代码类项目必做）：版本化 schema（Alembic）/ 索引 / CI 质量门 / 文档断言 / 私有边界 / 生产默认安全。这六项是 P0，不是"后续优化"，详见 [references/engineering-baseline.md](references/engineering-baseline.md)；缺任何一项，项目在"改结构、上生产、被追问"时必翻车
+   - **工程底座六件套同步生成**（代码类项目必做）：版本化 schema（Alembic）/ 索引 / CI 质量门 / 文档断言 / 私有边界 / 生产默认安全。这六项是 P0，不是"后续优化"，详见 [references/engineering-baseline.md](references/engineering-baseline.md)；缺任何一项，项目在"改结构、上生产、被追问"时必翻车。**装完还要验证"通电"**：配置旁路（业务代码绕过工厂直接 import 单例）、绝对阈值（分数尺度随数据量变化却写死门槛）、校验加了没改快速开始、取消异常未捕获——这四类静默失败见 3.8 节，它们不报错但会让六件套形同虚设
    - **文档断言同步生成**：生成 README 的同时准备 `scripts/check_docs.py`（测试数、路径、废弃表述、私有文件四类断言）并接入 CI。脚本来源按优先级：
      1. **已安装 `project-processization`**：直接从其 `scripts/check_docs.py` 复制到项目（**同源，禁止改逻辑**）；
      2. **未安装**：按 [references/engineering-baseline.md](references/engineering-baseline.md) 3.4 节自实现最小版（四类断言约 80 行）。
      **禁止两个位置各维护一份**——两份必然漂移，这正是本项目要防的问题。
    - **私有/公开边界同步生成**：任何含"AI 已完成比例、分工说明、内部复盘"的文档默认视为私有，写入 `.gitignore` 并放在仓外；`.env`、数据库文件、上传目录一并忽略
-   - **禁止假完备**：不允许生成"配置项存在但无人读取""模块写好但零调用""TTL 参数未实现""接口在但主链路不经过"的代码。要么接线，要么明确标注"旁路可用"，不要让它看起来在工作
+   - **禁止假完备**：不允许生成"配置项存在但无人读取""模块写好但零调用""TTL 参数未实现""接口在但主链路不经过"的代码；也不允许"工厂函数写着、业务代码却绕过它直接 import 单例"（配置旁路）和"用固定数值当门槛、而分数尺度随数据量变化"（绝对阈值）。要么接线，要么明确标注"旁路可用"，不要让它看起来在工作
    - **测试必须可复现**：假数据/假向量不能用内置 `hash()`（受 `PYTHONHASHSEED` 影响，跨进程不稳定），改用 `crc32` 之类稳定哈希；按 id 落盘的索引/缓存要在用例间清理，避免互相污染
 
 ### 第四步：人机分工判断（核心环节）
@@ -259,7 +259,9 @@ A/B/C 类的完整特征、典型示例、7 类项目的具体分工示例详见
     - **私有边界干净**：`git ls-files` 中无私有文档与 `.env`；`.gitignore` 覆盖
     - **默认安全**：`AUTO_CREATE_TABLES=false`；互操作/危险工具默认关闭
     - **无假完备**：`grep` 确认无死配置、零调用模块、假 TTL、未接线能力
-    - **一键自检**：`python scripts/check_baseline.py --root .` 覆盖上述七项（schema/index/ci/docs/private/defaults/deadconfig），有 error 即非零退出，可接 CI
+    - **六件套确实通电**（四类静默失败，见 `references/engineering-baseline.md` 3.8）：①业务代码不直接 import 单例，改 provider/开关后有用例证明行为随之变化；②数值门槛是相对的，把阈值调到极大仍返回 top1，且该用例能红；③快速开始按文档逐条实跑过；④流式/异步接口同时兜住 `CancelledError`，取消时也能落库
+    - **测试结论取产物**：`python -m pytest -q --junitxml=.pytest/junit.xml`，以 `tests/failures/errors` 三个数为判据，不信终端摘要行与退出码
+    - **一键自检**：`python scripts/check_baseline.py --root .` 覆盖七项底座断言（schema/index/ci/docs/private/defaults/deadconfig），有 error 即非零退出，可接 CI。脚本**不覆盖**上面两条（"通电"与"取产物"需靠用例和 CI 命令保证），不要把七项全绿当成全部达标
 
 ### 第七步：Git 初始化与交付
 
@@ -409,9 +411,9 @@ python scripts/check_baseline.py --root . --skip index,deadconfig --json
 
 ---
 
-> **最后更新**：2026-10-27
+> **最后更新**：2026-11-02
 >
-> **版本**：v2.2.3
+> **版本**：v2.2.5
 >
 > **基于**：宠物社交平台 P0-P3 内容设计优化实战 + 功能完整性矩阵 + 12维自检体系 + 技术选型决策框架 + 增量迭代流程 + 工程底座六件套（迁移/索引/质量门/文档断言/私有边界/默认安全）
 
@@ -424,6 +426,6 @@ python scripts/check_baseline.py --root . --skip index,deadconfig --json
 | [references/content-completeness.md](references/content-completeness.md) | 功能完整性检查清单：7大项目类型的标配功能（P0/P1/P2）+ 执行规则 | 第二步规划功能矩阵、第三步生成周边功能、第六步内容完整性自检时 |
 | [references/tech-selection.md](references/tech-selection.md) | 技术选型决策框架：四步决策流程 + 多维度对比评估 + 常见项目类型推荐 + 选型反模式 | 第二步资源/工具选型时 |
 | [references/iteration-guide.md](references/iteration-guide.md) | 增量更新与多轮迭代指南：五步迭代流程 + 6种场景处理 + 回滚策略 + 质量检查清单 | 增量更新与多轮迭代环节 |
-| [references/engineering-baseline.md](references/engineering-baseline.md) | 工程底座六件套：版本化 schema / 索引 / 质量门 / 文档断言 / 私有边界 / 默认安全 + 反模式清单 | 第二步规划、第三步生成、第六步自检时 |
+| [references/engineering-baseline.md](references/engineering-baseline.md) | 工程底座六件套：版本化 schema / 索引 / 质量门 / 文档断言 / 私有边界 / 默认安全 + **装了没通电的四类静默失败（3.8）** + 反模式清单 | 第二步规划、第三步生成、第六步自检时 |
 | [references/ci-snippets.md](references/ci-snippets.md) | CI 片段库：Python/Node/镜像/私有文件守卫 + 六个常见坑 + 反向验证方法 | 第三步生成 CI、第六步验证质量门时 |
 | [scripts/check_baseline.py](scripts/check_baseline.py) | 七项底座自检 CLI（schema/index/ci/docs/private/defaults/deadconfig），可接 CI | 第六步自检、增量迭代验证时 |

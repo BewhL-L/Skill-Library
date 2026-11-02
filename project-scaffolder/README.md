@@ -116,7 +116,7 @@ AI：[自动执行七步流程]
 | [references/verification-patterns.md](references/verification-patterns.md) | 验证任务与面试题模式 |
 | [references/content-completeness.md](references/content-completeness.md) | 功能完整性检查清单 |
 | [references/ci-snippets.md](references/ci-snippets.md) | CI 片段库：Python/Node/镜像/私有文件守卫 |
-| [references/engineering-baseline.md](references/engineering-baseline.md) | 工程底座六件套与反模式 |
+| [references/engineering-baseline.md](references/engineering-baseline.md) | 工程底座六件套与反模式；含「装了没通电的四类静默失败」（配置旁路 / 绝对阈值 / 校验未回写快速开始 / 取消未捕获） |
 | [FAQ.md](FAQ.md) | 常见问题 |
 | [CHANGELOG.md](CHANGELOG.md) | 版本变更记录 |
 

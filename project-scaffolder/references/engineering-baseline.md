@@ -74,7 +74,23 @@ CREATE INDEX ix_docs_kb_status_created ON documents(kb_id, status, created_at);
 - docker build            # 镜像能构建，才证明 Dockerfile 没坏
 ```
 
+**结果以机器可读产物为准，不要读终端**：
+
+```bash
+python -m pytest -q --junitxml=.pytest/junit.xml
+grep -o 'tests="[0-9]*" [^>]*' .pytest/junit.xml      # tests / failures / errors 三个数
+```
+
+终端摘要行和退出码都可能被环境改写——实测过一次"118 条用例全绿、退出码却是 1"
+（终端插件抢先接管输出，吞掉了摘要行并重写了退出码）。只看退出码会把"通过"判成失败，
+只看被截断的摘要又会把"失败"当成通过。把 junit 里的三个数当唯一判据，
+顺带让"通过"这件事有了可归档的物证。
+
 验收：随便提交一个语法错误，CI 必须红。
+
+> 分工：本节只给 CI 判据。文档里那些 `N passed` 该怎么产生、改完怎么同步，
+> 见 `project-processization/references/05-文档一致性与防漂移.md`「数字从哪来」（仅在已安装该 Skill 时可用）。
+> 两边不要各维护一份阈值与取数逻辑。
 
 ### 3.4 文档断言
 
@@ -118,7 +134,9 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 
 **禁止 `git add -A`**：它是私有文档误入仓库的头号入口。提交前先 `git status --short`。
 
-验收：`git ls-files | grep 私有文件名` 无输出；CI 里有对应断言。
+**从约定到闸门**：`.gitignore` 与"提交前看一眼 status"都依赖人记得——漏一次就是 2026-10-27 那种事故。给仓库装 `secret-gate` 技能的 pre-commit 钩子（`bash <skill-dir>/secret-gate/scripts/install-hook.sh .`），`.env`、私钥块、`user:pass@host` 形式的内嵌凭据会在提交那一刻被直接拒绝，工作区文件原样保留。把"禁止 `git add -A`"从口号变成可执行的检查。
+
+验收：`git ls-files | grep 私有文件名` 无输出；CI 里有对应断言。闸门验收：暂存一个假密钥（运行时拼接的 `sk-` 加 30 个字符），`git commit` 必须红。
 
 ### 3.6 生产默认安全
 
@@ -144,9 +162,96 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 
 验收：`docker compose config` 通过；`docker compose up -d` 后 `docker compose ps` 全部显示 `(healthy)`。
 
+### 3.8 装了却没通电：四类静默失败
+
+六件套的失效方式，主要不是"缺"，而是**装了没生效**。这类 bug 的共同特征：
+**测试全绿、日志无错、接口返回 200**，只在换一种配置、换一个数据量、换一条退出路径时才失效。
+
+#### ① 绕过统一入口（配置维度失效）
+
+| 项 | 内容 |
+|---|---|
+| 症状 | 开发环境一切正常；把 `VECTOR_PROVIDER` 从 `chroma` 改成 `qdrant`（或反之）后，该模块返回空结果，接口 200，日志一行不报 |
+| 根因 | 模块顶层写了 `from ..services.vector_store import vector_store`，拿到的是**导入那一刻**构造好的实例；工厂 `get_vector_store()` 里对配置的分支判断被整段绕过 |
+| 关键判断 | 同一个错误在两个以上文件里出现，说明缺的不是那几行 import，而是**"唯一入口"这条约束**——修法是立规矩，不是补代码 |
+| 验收 | ①`grep -rn "^from .*services.* import [a-z_]*_store$" app/` 应为**空**——业务代码只 import 工厂 `get_*`（遗留单例若还要兼容旧调用，就地注明"禁止新增引用"，并只允许测试引用）；②补一条"改 provider 后工厂返回类型随之变化"的用例 |
+
+```python
+# ✗ 模块级单例：配置改了，这里永远拿旧实例
+from ..services.vector_store import vector_store
+
+# ✓ 工厂：每次按当前配置取
+from ..services.vector_store import get_vector_store
+store = get_vector_store()
+```
+
+> 这条最值得单独记：它让"六件套里的配置项"变成死配置——`.env` 里改了、代码里没读，
+> 而 §4 的 `grep 配置名` 又能搜到读取处，于是静态检查也放过它。
+
+#### ② 用绝对数值当门槛（数据量维度失效）
+
+| 项 | 内容 |
+|---|---|
+| 症状 | 小语料 / 空库时召回恒为空；灌够数据后自己"恢复"，本地难以复现 |
+| 根因 | BM25 的 IDF 是 `log(1 + (N-n+0.5)/(n+0.5))`，**分数量级随语料规模变化**：小语料里查询词几乎"出现在全部 chunk"，n≈N，idf 被压到 0.05~0.29；写死 `score >= 0.5` 就把结果全过滤了 |
+| 反向同样成立 | 语料变大后同一个词可能只在少数 chunk 出现，idf 升到 1~4，0.5 的门槛又形同虚设——**同一个数字在小语料上误杀、在大语料上失效**，这才是"绝对阈值"真正的问题 |
+| 正确写法 | 相对门槛，并取"绝对与相对的较小值"，保证 top1 永不被误杀 |
+| 可证不变量 | `floor = min(ABS_MIN, top × RATIO)` ⇒ `floor ≤ RATIO × top < top`（RATIO<1），所以最高分那条一定留下 |
+
+实测（K1=1.5、B=0.75，查询词在全部 chunk 各出现 1 次，数据来自真实实现）：
+
+| 语料 chunk 数 | 1 | 2 | 3 | 5 | 10 |
+|---|---|---|---|---|---|
+| 单次命中分 | 0.2877 | 0.1823 | 0.1335 | 0.0870 | 0.0465 |
+| 纯绝对值 0.5 判定 | 杀掉 | 杀掉 | 杀掉 | 杀掉 | 杀掉 |
+| `min(0.5, 0.25×top)` | 0.0719 | 0.0456 | 0.0334 | 0.0218 | 0.0116 |
+
+注意分数随语料变大反而**下降**（因为 n 跟着 N 一起涨），"数据越少分越高"是反直觉的错误假设。
+
+```python
+if scored:
+    top = max(s for s, _ in scored)
+    floor = min(settings.BM25_MIN_SCORE, top * settings.BM25_MIN_SCORE_RATIO)
+    scored = [(s, d) for s, d in scored if s >= floor]
+```
+
+验收：把阈值参数临时调到极大（如 999），断言 top1 **仍然**在结果里。这条用例必须能红——
+把实现改回纯绝对值它就得失败，否则等于没测。
+
+#### ③ 加了启动期校验，没回头改快速开始（文档维度失效）
+
+| 项 | 内容 |
+|---|---|
+| 症状 | CI 绿、单测绿；新人按 README 三条命令跑，第一步就崩 |
+| 根因 | 校验加在代码里是对的，但 `.env.example` 里仍是占位值（`SECRET_KEY=change-me`），而新校验恰好拒绝占位值。**加校验的人知道要改，读文档的人不知道** |
+| 验收 | 把快速开始命令**逐条复制到空目录实跑一遍**；或加一个 CI job 用 `.env.example` 起服务并探活 |
+
+配套动作固定成三步，缺一步就是制造 ③：加校验 → 改 `.env.example`（标注必填 + 给出生成命令）→ 改快速开始。
+
+#### ④ 异常只 catch 了一半（退出路径维度失效）
+
+| 项 | 内容 |
+|---|---|
+| 症状 | 正常报错有兜底；用户关页面 / 断连 / 点取消时，库里留下半条记录（有提问、回答为空） |
+| 根因 | `asyncio.CancelledError` 继承 `BaseException` 而非 `Exception`，`except Exception` 抓不到；流式接口的断开正是以它表现的 |
+| 写法 | 先兜底、再上抛，**不要吞掉取消** |
+| 验收 | 写一条"生成过程中取消协程"的用例，断言落库记录不是空回答 |
+
+```python
+except asyncio.CancelledError:
+    _persist_stream_failure(message_id, partial, sources_data)   # 落已生成的部分
+    raise                                                        # 取消必须向上传播
+except Exception as e:
+    _persist_stream_failure(message_id, partial, sources_data)
+    logger.exception("stream failed: %s", e)
+```
+
+**一句话自检**：这段代码在**另一种配置 / 另一种数据量 / 另一条退出路径**下还成立吗？
+三种里只要有一种没测过，就等于没测——因为线上出事的总是那一种。
+
 ## 4. 反模式：假完备
 
-生成时最容易产出"看起来有、实际没用"的东西。以下五种，出现任一即为不合格：
+生成时最容易产出"看起来有、实际没用"的东西。以下七种，出现任一即为不合格：
 
 | 反模式 | 症状 | 检查 |
 |---|---|---|
@@ -155,6 +260,8 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 | 假 TTL | `set(key, v, ttl)` 的 ttl 未实现 | 写"等 2 秒再取"的用例 |
 | 未接线能力 | 接口/页面都在，主链路不经过 | 从入口顺调用链 |
 | 空实现 | 函数返回 `pass` / `TODO` | `grep -rn "TODO\|NotImplemented"` |
+| 配置旁路 | 工厂函数写着，业务代码却直接 import 单例 | `grep -rn "^from .* import .*_store" app/` 命中工厂外即不合格（见 3.8 ①） |
+| 绝对阈值 | 门槛是固定数字，而分数尺度随数据量变化 | 把阈值调到极大，看 top1 是否仍返回（见 3.8 ②） |
 
 **生成阶段就要避免**：要么接线，要么标注"旁路可用"，不要假装它在主链路里。
 
@@ -176,3 +283,8 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 - [ ] `.gitignore` 含私有文档与 `.env`；`git ls-files` 干净
 - [ ] `AUTO_CREATE_TABLES=false`；互操作能力默认关闭
 - [ ] 无死配置、零调用模块、假 TTL、未接线能力
+- [ ] 业务代码不直接 import 单例；改 provider / 改开关有对应用例（3.8 ①）
+- [ ] 数值门槛是相对的，且有"top1 永不被过滤"的用例，且这条用例能红（3.8 ②）
+- [ ] 快速开始按文档逐条实跑过，不只是"CI 绿"（3.8 ③）
+- [ ] 流式 / 异步接口同时兜住 `Exception` 与 `CancelledError`，取消时也能落库（3.8 ④）
+- [ ] 测试结论取自 `--junitxml` 产物，不依赖终端摘要行与退出码

@@ -152,7 +152,7 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 - `references/02-事实核查清单.md`：哪些数字必须实测、用什么命令、如何核对 golden 用例/配置/脚本参数。
 - `references/03-写作规范.md`：Frontmatter 字段、标题层级、Obsidian callout、Mermaid、表格与代码围栏规范。
 - `references/04-AI协作Prompt库.md`：让 AI 讲代码、拆任务、出评测题的可复制 Prompt，以及"红线"。
-- `references/05-文档一致性与防漂移.md`：单一事实源、四类断言、CI 接入、架构图规范、假完备清单、公开/私密分离。
+- `references/05-文档一致性与防漂移.md`：单一事实源、四类断言、CI 接入、架构图规范、假完备清单、公开/私密分离；含「数字从哪来」——`--junitxml` 产物 > 终端摘要行 > 退出码的可信度排序。
 - `examples/`：以一个真实企业级 RAG+Agent 项目为例，展示扫描事实到八章的映射关系。
 
 ## 八、边界与禁忌
@@ -166,6 +166,6 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 
 ---
 
-> 版本：v1.1.2
+> 版本：v1.1.4
 > 产物语言：与项目/用户语言一致（默认简体中文）
 > 配套工具：scripts/ 下 5 个纯标准库 CLI（Python 3.8+）

@@ -169,7 +169,7 @@ python scripts/check-install-sync.py ../your-skill      # 加 --json 便于接�
 6. 提交代码 → 符合 Conventional Commits 规范
 ```
 
-> **⚠️ 强制约束**：第5步不是可选步骤。每次修改 SKILL.md / scripts/ / references/ 后，必须在同一次修改中更新 CHANGELOG.md，记录本次变更内容并按语义化版本规则升级版本号。未更新 CHANGELOG 的修改视为未完成，不得提交。
+> **⚠️ 强制约束**：第5步不是可选步骤。每次修改 SKILL.md / scripts/ / references/ 后，必须在同一次修改中更新 CHANGELOG.md，记录本次变更内容并按语义化版本规则升级版本号。未更新 CHANGELOG 的修改视为未完成，不得提交。"同一次修改"指**同一轮工作、同一次提交**——也不允许"先改内容、CHANGELOG 下轮再补"：补记的 CHANGELOG 无法证明当时到底改了什么。这条约束本身由 `tests/unit/test_meta_consistency.py` 兜底（页脚版本/日期 ≠ CHANGELOG 最新条目即红）。
 
 ---
 
@@ -576,8 +576,8 @@ python skill-opt.py info
 
 ---
 
-> **最后更新**：2026-10-09
+> **最后更新**：2026-11-02
 >
-> **版本**：v1.8.1
+> **版本**：v1.9.2
 >
 > **基于**：obsidian-knowledge-base-creator 25 轮优化实战经验 + 多类型 Skill 自适应优化 + 批量优化与对比报告

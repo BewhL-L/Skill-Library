@@ -1,0 +1,6 @@
+# 一次真实拦截的输出（假数据，密钥用星号遮蔽）
+gate: 拦截 2 处（检查 37 个文件）
+  backend/.env:1  [env-file] 环境文件常含密钥，应以 .env.example 入库
+  backend/.env:1  [openai-key] 疑似 OpenAI/SiliconFlow 密钥
+
+处置：移除该内容，或确认无误后在 rules.json 的 allow 里加白名单。

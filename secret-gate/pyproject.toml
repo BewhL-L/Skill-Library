@@ -1,0 +1,10 @@
+[project]
+name = "secret-gate"
+version = "0.1.0"
+description = "提交前敏感内容闸门（仅用标准库）"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+readme = "README.md"
+
+# 说明：本技能不以 pip 包形式分发，pyproject 仅提供元数据与工具配置入口。
+dependencies = []

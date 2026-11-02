@@ -41,12 +41,14 @@ BINARY_EXT = {
 
 
 def git(args: list[str], cwd: Path) -> tuple[int, str]:
+    """在仓库内执行 git，返回 (退出码, 合并后的输出)。"""
     proc = subprocess.run(["git", "-C", str(cwd), *args], capture_output=True, text=True,
                           encoding="utf-8", errors="replace")
     return proc.returncode, (proc.stdout or "").strip()
 
 
 def load_rules(path: Path) -> dict:
+    """读取规则文件，补齐缺失字段的默认值。"""
     with path.open(encoding="utf-8") as handle:
         rules = json.load(handle)
     rules.setdefault("deny_paths", [])
@@ -57,6 +59,7 @@ def load_rules(path: Path) -> dict:
 
 
 def collect_files(mode: str, root: Path) -> list[Path]:
+    """按模式收集待扫描文件：staged / all / 目录递归。"""
     if mode in ("staged", "all"):
         flag = ["diff", "--cached", "--name-only"] if mode == "staged" else ["ls-files"]
         code, out = git(flag, root)
@@ -70,10 +73,12 @@ def collect_files(mode: str, root: Path) -> list[Path]:
 
 
 def is_allowed(rel: str, allow: list[str]) -> bool:
+    """路径是否命中 allow 白名单（glob）。"""
     return any(fnmatch.fnmatch(rel, pattern) for pattern in allow)
 
 
 def scan(root: Path, files: list[Path], rules: dict) -> list[dict]:
+    """按 路径规则 → 体积 → 内容规则 的顺序扫描，返回 findings 列表。"""
     findings: list[dict] = []
     path_rules = [(r["id"], re.compile(r["pattern"]), r.get("why", "")) for r in rules["deny_paths"]]
     content_rules = [(r["id"], re.compile(r["pattern"]), r.get("why", "")) for r in rules["content"]]

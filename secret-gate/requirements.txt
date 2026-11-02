@@ -1,0 +1,2 @@
+# gate.py 只用标准库，无第三方依赖。
+# 保留此文件是为了让"安装步骤"里那句 pip install -r requirements.txt 也能跑通（空安装）。

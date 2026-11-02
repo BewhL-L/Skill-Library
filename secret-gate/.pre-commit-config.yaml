@@ -1,0 +1,12 @@
+# 若使用 pre-commit 框架（https://pre-commit.com），可用本地钩子接入同一个 gate.py。
+# 通常不需要：scripts/install-hook.sh 写的裸钩子已覆盖绝大多数仓库。
+# 把 <skill-dir> 换成本技能的绝对路径后再启用。
+repos:
+  - repo: local
+    hooks:
+      - id: secret-gate
+        name: secret-gate
+        entry: python <skill-dir>/scripts/gate.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true

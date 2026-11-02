@@ -1,0 +1,8 @@
+{
+  "_comment": "白名单示例：只按路径放行，且尽量窄",
+  "allow": [
+    "tests/fixtures/**",
+    "**/.env.example",
+    "docs/example-secrets.md"
+  ]
+}

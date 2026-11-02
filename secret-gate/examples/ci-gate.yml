@@ -1,0 +1,13 @@
+# GitHub Actions 接入片段（不能直接放进技能目录：workflow 必须位于仓库根的 .github/workflows/）。
+# 复制到 <仓库根>/.github/workflows/gate.yml，并把路径换成 secret-gate 的实际位置。
+name: secret-gate
+on: [push, pull_request]
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 规则回归
+        run: python path/to/secret-gate/tests/test_gate.py
+      - name: 敏感内容扫描
+        run: python path/to/secret-gate/scripts/gate.py . --all

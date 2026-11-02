@@ -1,5 +1,6 @@
 ---
 name: secret-gate
+version: 0.1.0
 description: 提交前的敏感内容闸门。检查即将进入版本库的文件里是否有密钥、私钥、内嵌密码的连接串、私密文档、依赖目录或超大文件；命中即阻止提交并给出文件与行号，可装成 git pre-commit 钩子、接进定时提交脚本或 CI。当用户提到"提交前检查密钥""别把 .env 推上去""仓库里有没有泄露 token""给仓库装个 pre-commit 检查"时使用。
 ---
 
@@ -60,7 +61,7 @@ secret_gate: 拦截 2 处（检查 1 个文件）
 ## 自测
 
 ```bash
-python tests/selftest.py     # 7 个用例：真阳性 3、真阴性 2、白名单 1、JSON 输出 1
+python tests/test_gate.py     # 7 个用例：真阳性 3、真阴性 2、白名单 1、JSON 输出 1
 ```
 
 改规则后必须跑一遍。**没有测试的规则等于没有规则**——它可能在某个版本后静默失效，而你不会知道。
@@ -72,7 +73,7 @@ python tests/selftest.py     # 7 个用例：真阳性 3、真阴性 2、白名�
 | `scripts/gate.py` | 扫描器，stdlib，Win / WSL 通用 |
 | `rules.json` | 规则与白名单 |
 | `scripts/install-hook.sh` | 装 `pre-commit` 钩子（Git for Windows 自带 sh，无需额外环境） |
-| `tests/selftest.py` | 规则回归测试 |
+| `tests/test_gate.py` | 规则回归测试 |
 
 ## 已知边界
 

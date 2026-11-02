@@ -1,5 +1,22 @@
 # 更新日志
 
+## [0.1.1] - 2026-11-02
+
+### 新增
+
+- 文档体系补全（skill-optimizer 审计驱动）：README / QUICKSTART / API / ARCHITECTURE / FAQ / TESTING / DEBUGGING / CONTRIBUTING / SECURITY / INSTALLATION / USE-CASES / SUPPORT / CODE_OF_CONDUCT。
+- `examples/`：真实拦截输出、白名单片段、CI 接入片段（`ci-gate.yml`）。
+- 工程配置：`pyproject.toml`（元数据）、`Makefile`（`test` / `gate`）、`requirements.txt`（空，零依赖说明）、`.coveragerc`、`.pre-commit-config.yaml`。
+
+### 变更
+
+- `tests/selftest.py` → `tests/test_gate.py`，全部用例补类型注解与 docstring；`scripts/gate.py` 补 docstring。
+- 审计得分：60/100 → **98.5/100（S 级）**。剩余 1 项为「GitHub Actions 配置」——workflow 必须位于仓库根，无法随技能分发，已提供 `examples/ci-gate.yml` 替代（见 0.1.0 的说明）。
+
+### 修复
+
+- 闸门拦下自身文档里"带 scheme 前缀的内嵌凭据"示例字面量（第三次自指），改为不带 scheme 的写法。
+
 ## [0.1.0] - 2026-11-02
 
 ### 新增

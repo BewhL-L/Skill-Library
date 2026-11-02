@@ -1,6 +1,6 @@
 [project]
 name = "secret-gate"
-version = "0.1.0"
+version = "0.1.1"
 description = "提交前敏感内容闸门（仅用标准库）"
 requires-python = ">=3.8"
 license = { text = "MIT" }

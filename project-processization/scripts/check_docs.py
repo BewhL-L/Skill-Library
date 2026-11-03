@@ -77,7 +77,7 @@ def count_tests(tests_dir: Path) -> tuple:
     total = skipped = 0
     for path in sorted(tests_dir.glob("test_*.py")):
         try:
-            tree = ast.parse(path.read_text(encoding="utf-8"))
+            tree = ast.parse(path.read_text(encoding="utf-8-sig"))
         except (OSError, SyntaxError):
             continue
         module_skipped = any(
@@ -162,11 +162,11 @@ def check_private(root: Path, private: dict) -> list:
 def load_routes(openapi: Path = None, routes_file: Path = None) -> set:
     paths = set()
     if openapi and openapi.exists():
-        data = json.loads(openapi.read_text(encoding="utf-8"))
+        data = json.loads(openapi.read_text(encoding="utf-8-sig"))
         paths.update(data.get("paths", {}).keys())
     if routes_file and routes_file.exists():
         paths.update(
-            line.strip() for line in routes_file.read_text(encoding="utf-8").splitlines()
+            line.strip() for line in routes_file.read_text(encoding="utf-8-sig").splitlines()
             if line.strip()
         )
     return {BRACES.sub("{}", p).rstrip("/") for p in paths}
@@ -208,7 +208,7 @@ def main() -> int:
         print(f"找不到文档：{doc}")
         return 1
 
-    text = doc.read_text(encoding="utf-8")
+    text = doc.read_text(encoding="utf-8-sig")
     forbidden = dict(DEFAULT_FORBIDDEN)
     forbidden.update({item: "由 --forbid 指定" for item in args.forbid})
     private = dict(DEFAULT_PRIVATE)

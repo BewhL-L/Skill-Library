@@ -1,4 +1,4 @@
-# ARCHITECTURE
+﻿# ARCHITECTURE
 
 本 Skill 是**纯文档型**：没有脚本、没有可执行代码，质量完全取决于"约束写得够不够硬"和"模板够不够细"。
 
@@ -6,7 +6,7 @@
 
 ```
 project-based-learning/
-├── SKILL.md                          主流程：原则 / 8 部分概览 / 工作流 / 输出规范 / 质量清单
+├── SKILL.md                          主流程：原则 / 8 部分概览 / 工作流 / 工程实践基线 / 输出规范 / 质量清单 / 四轮自检
 ├── references/
 │   ├── project-templates.md          8 大部分的逐段模板（生成时按部分取用）
 │   └── project-types-and-templates.md  8 类项目的需求模板与知识点覆盖矩阵

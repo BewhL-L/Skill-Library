@@ -124,6 +124,8 @@
 
 > 这三个是仓库里**唯一带可执行脚本与测试**的部分：
 > `project-processization`（`check_docs.py`，7 个测试文件）、`project-scaffolder`（`check_baseline.py` + 单测）、`skill-optimizer`（6 个脚本 + 8 个测试）。
+>
+> **项目类三件套**（`project-based-learning` 方案 → `project-scaffolder` 项目 → `project-processization` 指南）的定位、输入、产物与"不做什么"，见 [Skill依赖关系图谱](Skill依赖关系图谱.md) 的「项目三件套」节。
 
 ---
 

@@ -1,5 +1,48 @@
 # 更新日志
 
+## [1.9.4] - 2026-11-02
+
+### 🐛 修复
+
+- **可用性维度只扫描第一个 `.py` 文件**：`_check_usability()` 的循环末尾有 `break`，`argparse` 只要不在"遍历到的第一个文件"里就判「未使用 argparse」（−20），文件顺序直接决定分数。改为扫描全部源码文件，命中即提前退出。
+  验证：构造 `scripts/a.py`（无）+ `scripts/b.py`（有 argparse）的合成技能，修复前 usability = 50，修复后 = 70（仅剩缺 `QUICKSTART.md` 的 −30）。
+- **注解 / docstring 覆盖率把 `tests/` 计入**：测试函数写得简略会拖低"源码质量"，口径不对。新增 `iter_source_files()`，统一跳过 `.venv`、`__pycache__`、`node_modules`、`.git`、`.pytest_cache` 与 `tests/`、`test/`、`__tests__`。
+  本 Skill 自身：注解 22.4% → 40.2%，docstring 55% → 68%（分母变小，数字更真实）。
+
+### 📊 评分变化
+
+| 维度 | 1.9.3 | 1.9.4 |
+|---|---|---|
+| code_quality | 77 | **81** |
+| 总分 | 87.2 | **88.0** |
+
+其余三个真实技能回归：`project-processization` 100、`project-scaffolder` 100、`hermes-portability` 99，均无变化（口径修正未误伤）。
+
+### 📄 文档
+
+- `DEBUGGING.md`、`TESTING.md` 同步：把这两项从「已知误判 / 已知盲区」移到「1.9.4 已修复」。
+
+## [1.9.3] - 2026-11-02
+
+### 🐛 修复
+
+- **UTF-8 BOM 导致 frontmatter 误报**：`SKILL.md` 开头带 `EF BB BF` 时，`content.startswith("---")` 判 false，报「缺少 frontmatter」（high），metadata 由 100 掉到 75。根因是全文 14 处 `read_text(encoding="utf-8")`，BOM 会作为 `\ufeff` 残留在字符串首。
+  统一改为 `utf-8-sig`（读普通 UTF-8 行为不变，仅剥 BOM）。修复后本 Skill 自评：metadata 95、总分 82 → 85。
+
+### 📄 文档
+
+- 新增 `TESTING.md`：9 个测试文件 / 97 用例的分层职责、运行方式、真实技能端到端验证清单、已知盲区。
+- 新增 `DEBUGGING.md`：症状→原因→处理对照表（含 BOM、类型判错、单行正则漏计、UNC 路径）、最小复现构造、连字符脚本的 import 方式、已知误判边界。
+
+### 📊 评分变化
+
+| 维度 | 1.9.2 | 1.9.3 |
+|---|---|---|
+| documentation | 90 | **100** |
+| 总分 | 85.0 | **87.2** |
+
+> 剩余失分：templates 30（检查器不产出模板）、code_quality 77（注解 22.4%）、maintainability 90（899 行）。按「不为分数造目录」的原则保留现状。
+
 ## [1.9.2] - 2026-11-02
 
 ### 🐛 修复

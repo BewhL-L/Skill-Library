@@ -1,7 +1,8 @@
----
+﻿---
 title: 项目流程化：AI 协作学习指南生成
 name: project-processization
-description: 把 AI 已生成/搭好骨架的软件项目，转化为"零基础到专家级"的 AI 协作学习指南。当用户需要：(1) 为 AI 生成的全栈项目补一份从入门到精通、能动手能面试的学习路线/学习指南；(2) 明确区分"AI 已完成部分如何利用"与"用户必须亲手完成部分该怎么完成"；(3) 在不删减原 README 一个字的前提下扩写项目说明、学习排期、源码精读路线、评测与验收清单；(4) 对项目文档做事实核查（行数/测试数/组件数/依赖/服务必须可追溯）、Markdown 结构校验、原文零删减比对、生成可点击目录；(5) 区分公开 README 与私密学习指南、把文档一致性做成 CI 断言时使用。支持 Python / FastAPI / Vue3 / TypeScript / Java / Node 等任意技术栈，输出标准化 Markdown（Frontmatter + 折叠目录 + Mermaid + Obsidian callout）。
+version: 1.2.0
+description: 把 AI 已生成/搭好骨架的软件项目，转化为"零基础到专家级"的 AI 协作学习指南。当用户需要：(1) 为 AI 生成的全栈项目补一份从入门到精通、能动手能面试的学习路线/学习指南；(2) 明确区分"AI 已完成部分如何利用"与"用户必须亲手完成部分该怎么完成"；(3) 在不删减原 README 一个字的前提下扩写项目说明、学习排期、源码精读路线、评测与验收清单；(4) 对项目文档做事实核查（行数/测试数/组件数/依赖/服务必须可追溯）、Markdown 结构校验、原文零删减比对、生成可点击目录；(5) 区分公开 README 与私密学习指南、把文档一致性做成 CI 断言时使用。支持 Python / FastAPI / Vue3 / TypeScript / Java / Node 等任意技术栈，输出标准化 Markdown（Frontmatter + 折叠目录 + Mermaid + Obsidian callout）。项目尚未生成时先用 project-scaffolder；只要方案、不要项目时用 project-based-learning。
 ---
 
 # 项目流程化：把 AI 搭好的项目，变成"零基础可学、可动手、可验收"的指南
@@ -14,7 +15,7 @@ AI 现在能一键生成"能跑、功能齐全"的全栈项目（如 RAG + Agent
 - **抄完就交**：项目能跑，但一行没写、一问就露馅，面试与工作都用不上；
 - **无从下手**：上万行代码、几十个模块，不知道先读什么、什么必须自己重写、怎么验收。
 
-本 Skill 的产物是**两份文档，而不是一份**：
+本 Skill 的默认产物是**两份文档**（按需追加第三份）：
 
 | 产物 | 受众 | 内容 | 位置 |
 |---|---|---|---|
@@ -24,9 +25,27 @@ AI 现在能一键生成"能跑、功能齐全"的全栈项目（如 RAG + Agent
 > 两者内容不同、受众不同、安全级别不同。把指南写进 README 等于把"哪些是 AI 写的"摊给面试官——
 > 这是本 Skill 最容易犯、后果最重的一个错误。详见 `references/05-文档一致性与防漂移.md` 第 7 节。
 
+> [!important] 第三产物：零基础精讲版（按需，但真新手必做）
+> 私密指南仍然假设读者能读懂"RAG / 向量 / 切片 / SSE"这些词，对完全新手依旧太密。
+> 当学习者自评"零基础"时，追加一份《零基础精讲版》：**名词首次解释、每条命令的作用与预期输出、日志逐行解读、代码带读、每章末尾动手卡片**。
+> 它不是主指南的删减版，而是"教科书"——主指南管"做什么、做到什么程度算过"，精讲版管"这是什么、为什么、我现在该看到什么"。
+> 完整结构、写作规则与卡片模板见 `references/06-零基础精讲版规范.md`。
+
+### 三 Skill 定位卡（本 Skill 是教学/验收层）
+
+> 三个 `project-*` 最容易混。记住一条流水线：**方案 → 项目 → 指南**。
+
+| 层 | Skill | 一句话 | 不做什么 | 下一步 |
+|---|---|---|---|---|
+| 方案 | `project-based-learning` | 8 大部分项目方案 + 知识库双链 | 不生成代码 / 逐章指南 | → `project-scaffolder` |
+| 执行 | `project-scaffolder` | 需求 → 产物 → 分工 → 行动指南 | 不做已有代码的深度精读 | → `project-processization` |
+| 教学 | **本 Skill（project-processization）** | 公开 README + 私密精读指南（+ 零基础精讲版） | 不生成项目 / 不替你做练习 | 动手 + 评测 |
+
+完整对照（定位 / 输入 / 产物 / 不做什么）见仓库根 `Skill依赖关系图谱.md` 的「项目三件套」节；Skill 独立安装时该文件可能不存在，以本卡为准。
+
 > 核心理念一句话：**跑起来 → 读得懂 → 复现出 → 改得动**，AI 负责"骨架 + 体力"，学习者负责"灵魂 + 验证"。
 
-## 二、五条核心原则（不可违背的设计原则）
+## 二、六条核心原则（不可违背的设计原则）
 
 1. **零删减原则**：原始 README 一个字都不删，只允许"插入 / 增强"。唯一例外是**显式标注的事实修正**（如测试数写错），且必须用 `verify_zero_cut.py` 输出差异、在正文说明，禁止静默改写。
 2. **事实可追溯原则**：文档里每一个数字（文件行数、测试用例数、组件数、配置开关、服务名、依赖、脚本参数）都必须来自 `scan_project_facts.py` 的同一次扫描或直接读源码，禁止凭印象编造；统计口径要写清（物理行、排除 `__init__.py`/缓存/依赖目录）。
@@ -69,19 +88,24 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 ### 第 4 轮：补可执行性与全面性
 
 - 操作手册前置环境清单（什么不用装、什么必须装、如何验证）、Git 安全网（无 git 时如何 init 基线）、调试/接口测试/前端构建工具箱、成本控制、基础补课对照表。
+- **零基础可读性**：术语首次出现必须解释；每条命令标注工作目录与"应该看到什么"；关键流程给日志/输出逐行解读；代码精读给"从哪个函数进、打什么断点、改哪一行看变化"。真新手追加《零基础精讲版》（`references/06-零基础精讲版规范.md`）。
+- **命令实跑**：文档里的命令必须在真实环境执行过，不是"看起来对"。重点查覆盖风险（`cp .env` 会清空已有 Key）、工作目录（`ruff app tests scripts` 必须在 `backend/`）、解释器上下文（宿主机 `python3`、容器/venv `python`）、状态口径（frontend 没有 healthcheck，不能写"五个都 healthy"）。
 - 检查清单见 `references/01-五轮迭代方法论.md` 第 4 轮。
 
 ### 第 5 轮：导航、回归校验与交付
 
-- 生成折叠目录并写回：
+- 生成折叠目录并写回（**路径指向私密指南，不是 README**；按实际位置调整）：
   ```bash
-  python scripts/make_toc.py --path README.md --start "学习指南" --end "License" \
+  python scripts/make_toc.py --path ../private-notes/学习指南.md --start "学习指南" --end "License" \
     --levels 3-4 --details --title "学习指南目录（点击展开）" --insert-after "学习指南（AI 协作版）" --write
   ```
-- 三连校验（见下方"四、五个脚本"）：
+- 三连校验（见下方"四、五个脚本"；README 与私密指南**分别校验**）：
   ```bash
-  python scripts/validate_md.py --path README.md --require-frontmatter
+  # 私密指南：结构 + 目录
+  python scripts/validate_md.py --path ../private-notes/学习指南.md --require-frontmatter
+  # 公开 README：零删减
   python scripts/verify_zero_cut.py --original README_original.md --new README.md
+  # 项目：文档与代码一致性
   python scripts/check_docs.py --root . --tests backend/tests
   ```
 - **把 `check_docs.py` 接进 CI**（lint job 里加一步即可）。生成时校验只能保证"此刻对"，只有 CI 才能保证"以后还对"。
@@ -115,6 +139,9 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 3. **导航可用**：开头有"今天就做这 3 件事"快速入口，指南标题下有折叠 TOC，结尾有代码地图 + 文档导航。
 4. **事实零错误**：所有数字可追溯到扫描结果或源码；配置开关、脚本参数、路径与项目一致；敏感信息（API Key、密码）脱敏。
 5. **分工与验收清晰**：六大亲手任务 + 白板算法清单 + 阶段周期/验收 + 终极 checkbox 清单齐备；命令可照抄、报错有排查。
+6. **零基础可读**（面向新手时）：关键术语首次出现有定义 + 比喻；每条命令有工作目录与预期输出；每章末尾有动手卡片（目标 / 命令或"没有命令" / 验收清单 / 卡住了）。
+7. **命令安全**：禁止无条件覆盖式命令（如 `cp backend/.env.example backend/.env`），必须加存在性判断并说明后果；涉及删库/删卷/丢弃改动的命令必须标"危险"。
+8. **示意值标注**：示例指标、示例日志、示例报错必须标"示意值，不是实测值"；真实数字只能来自同一次事实扫描或源码。
 
 交付前自检清单：
 
@@ -128,6 +155,10 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 - [ ] `check_docs.py` 全绿，且做过一次反向验证（故意写错一个数字/路径，确认会红）
 - [ ] 私密指南不在仓库内；`.gitignore` 已含；仓库 `git ls-files` 中无私有文档
 - [ ] 架构图每层能指到具体文件/函数；未接线能力用虚线标注（见 references/05 第 5 节）
+- [ ] 面向零基础时，已产出《零基础精讲版》，且每章末尾有动手卡片
+- [ ] 所有命令在真实环境跑过；每条标了工作目录与预期输出；无覆盖式 `cp .env`
+- [ ] 示例数字/日志已标"示意值"；没有把示意值写成实测结论
+- [ ] 文档里的函数签名、CLI 参数、字段名与当前代码一致（漂移检查见 06 第 7 节）
 
 ## 六、使用场景
 
@@ -153,6 +184,7 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 - `references/03-写作规范.md`：Frontmatter 字段、标题层级、Obsidian callout、Mermaid、表格与代码围栏规范。
 - `references/04-AI协作Prompt库.md`：让 AI 讲代码、拆任务、出评测题的可复制 Prompt，以及"红线"。
 - `references/05-文档一致性与防漂移.md`：单一事实源、四类断言、CI 接入、架构图规范、假完备清单、公开/私密分离；含「数字从哪来」——`--junitxml` 产物 > 终端摘要行 > 退出码的可信度排序。
+- `references/06-零基础精讲版规范.md`：第三产物的 11 章结构（0-10）、写作规则、动手卡片模板、命令审查清单、多轮审核清单与高频坑。
 - `examples/`：以一个真实企业级 RAG+Agent 项目为例，展示扫描事实到八章的映射关系。
 
 ## 八、边界与禁忌
@@ -166,6 +198,6 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 
 ---
 
-> 版本：v1.1.4
+> 版本：v1.2.0
 > 产物语言：与项目/用户语言一致（默认简体中文）
 > 配套工具：scripts/ 下 5 个纯标准库 CLI（Python 3.8+）

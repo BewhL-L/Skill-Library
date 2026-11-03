@@ -133,7 +133,9 @@ def main() -> int:
         print(f"❌ 文件不存在: {path}", file=sys.stderr)
         return 2
     try:
-        text = path.read_text(encoding="utf-8")
+        raw = path.read_bytes()
+        had_bom = raw.startswith(b"\xef\xbb\xbf")
+        text = path.read_text(encoding="utf-8-sig")
     except OSError as exc:
         print(f"❌ 读取失败: {exc}", file=sys.stderr)
         return 1
@@ -156,7 +158,8 @@ def main() -> int:
             print(f"❌ 未找到插入锚点标题: {args.insert_after}", file=sys.stderr)
             return 2
         new_text = pattern.sub(lambda m: m.group(1) + "\n\n" + toc, text, count=1)
-        path.write_text(new_text, encoding="utf-8")
+        # 保留原文件的 BOM 状态，避免写回后整文件 diff
+        path.write_text(new_text, encoding="utf-8-sig" if had_bom else "utf-8")
         print(f"已将目录插入到「{args.insert_after}」之后并写回 {path}")
         return 0
 

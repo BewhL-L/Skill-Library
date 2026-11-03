@@ -36,7 +36,7 @@ pip install pytest pytest-cov ruff
 
 ```bash
 python -m py_compile scripts/*.py     # 语法编译
-python -m pytest tests -v             # 运行 32 个测试
+python -m pytest tests -v             # 运行全量测试
 ```
 
 ## 平台说明

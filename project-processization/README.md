@@ -16,13 +16,17 @@ AI 现在能一键生成"能跑、功能齐全"的全栈项目，但学习者直
 明确"AI 已完成的部分如何利用"与"学习者必须亲手做的部分怎么完成"，最后用脚本做
 **结构校验、原文零删减比对、目录生成**三道回归检查。
 
-## 五条铁律
+若读者是**完全新手**，再追加第三产物《零基础精讲版》：名词解释、命令逐条注解、日志逐行解读、
+代码带读、每章末尾动手卡片。规范见 `references/06-零基础精讲版规范.md`。
+
+## 六条铁律
 
 1. **零删减（仅指公开 README）**：原 README 一个字不删，只允许插入 / 增强；事实修正必须显式声明并经脚本比对。私密指南独立成文，不受此约束。
 2. **事实可追溯**：行数、测试数、组件数、依赖、服务、脚本参数都来自脚本扫描或源码，禁止编造。
 3. **分工显式**：每个模块标注"AI 已完成 / 需验证 / 必须亲手写"，并配套"让 AI 讲代码"的 Prompt。
 4. **循序渐进**：分阶段路线，每阶段给周期、验收、练习、优先级、学习技巧。
 5. **可执行可验收**：命令可照抄、报错有排查、每步有 checklist。
+6. **公开/私密分离**：README 只放能给面试官看的内容；分工、AI 协作比例、逐章练习进仓库外的私密指南，并用 CI 守卫。
 
 ## 目录结构
 
@@ -40,12 +44,13 @@ AI 现在能一键生成"能跑、功能齐全"的全栈项目，但学习者直
 │   ├── 02-事实核查清单.md
 │   ├── 03-写作规范.md
 │   ├── 04-AI协作Prompt库.md
-│   └── 05-文档一致性与防漂移.md
+│   ├── 05-文档一致性与防漂移.md
+│   └── 06-零基础精讲版规范.md         # 第三产物：第 0-10 章 + 动手卡片
 ├── templates/
-│   └── learning-guide-template.md    # 八章学习指南主骨架
+│   └── learning-guide-template.md    # 八章主指南 + 零基础分支说明
 ├── examples/
 │   └── 企业知识库项目-章节映射.md      # 真实样例：事实 → 八章
-├── tests/                            # 单元 + 集成测试（32 用例）
+├── tests/                            # 单元 + 集成测试（用例数以 collect 为准）
 ├── .github/workflows/ci.yml          # CI
 └── pyproject.toml / Makefile / .coveragerc / ...
 ```
@@ -58,6 +63,7 @@ python scripts/scan_project_facts.py --path ./你的项目 --group-depth 2 \
   --components "app/routers,app/models,src/views" --json --output facts.json
 
 # 2. 复制 templates/learning-guide-template.md，按 references 填充八章
+#    读者是零基础时，另起一份精讲版（references/06-零基础精讲版规范.md）
 
 # 3. 三连校验
 python scripts/validate_md.py --path README.md --require-frontmatter
@@ -76,7 +82,7 @@ python scripts/make_toc.py --path README.md --start "学习指南" --end "Licens
 ## 验证
 
 ```bash
-python -m pytest tests -v          # 32 个用例
+python -m pytest tests -v          # 全量用例（以 collect 为准）
 python -m py_compile scripts/*.py  # 语法检查
 ```
 

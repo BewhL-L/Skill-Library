@@ -16,16 +16,19 @@ def _make_migration(root: Path) -> None:
 
 
 def test_missing_migration_is_error(tmp_path: Path) -> None:
+    """没有迁移体系时必须报 error，不能静默通过。"""
     problems = check_baseline.check_schema(tmp_path)
     assert any(level == "error" for level, _ in problems)
 
 
 def test_alembic_project_passes_schema(tmp_path: Path) -> None:
+    """alembic.ini 存在且版本目录非空时，schema 检查应无问题。"""
     _make_migration(tmp_path)
     assert check_baseline.check_schema(tmp_path) == []
 
 
 def test_create_all_guarded_by_switch_is_info(tmp_path: Path) -> None:
+    """create_all 被开关保护时只提示 info，不升级为 warn。"""
     _make_migration(tmp_path)
     (tmp_path / "backend" / "app").mkdir(parents=True)
     (tmp_path / "backend" / "app" / "main.py").write_text(
@@ -37,6 +40,7 @@ def test_create_all_guarded_by_switch_is_info(tmp_path: Path) -> None:
 
 
 def test_index_warns_on_foreign_key_without_index(tmp_path: Path) -> None:
+    """外键列缺 index=True 时必须给出 warn。"""
     models = tmp_path / "app" / "models"
     models.mkdir(parents=True)
     (models / "doc.py").write_text(
@@ -49,6 +53,7 @@ def test_index_warns_on_foreign_key_without_index(tmp_path: Path) -> None:
 
 
 def test_index_ok_when_indexed(tmp_path: Path) -> None:
+    """外键列都建了索引时不应出现 warn。"""
     models = tmp_path / "app" / "models"
     models.mkdir(parents=True)
     (models / "doc.py").write_text(
@@ -61,6 +66,7 @@ def test_index_ok_when_indexed(tmp_path: Path) -> None:
 
 
 def test_private_detects_tracked_env(tmp_path: Path, monkeypatch) -> None:
+    """.env 被版本库跟踪时必须报 error。"""
     class _Result:
         returncode = 0
         stdout = "README.md\nbackend/.env\n"
@@ -71,6 +77,7 @@ def test_private_detects_tracked_env(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_dead_config_is_reported(tmp_path: Path) -> None:
+    """只定义不使用的配置项要出现在报告里。"""
     (tmp_path / "app").mkdir()
     (tmp_path / "app" / "config.py").write_text("UNUSED_FLAG: bool = True\n", encoding="utf-8")
     (tmp_path / "app" / "main.py").write_text("print('hi')\n", encoding="utf-8")
@@ -80,6 +87,7 @@ def test_dead_config_is_reported(tmp_path: Path) -> None:
 
 
 def test_main_returns_error_on_empty_project(tmp_path: Path, monkeypatch) -> None:
+    """空项目跑完七项检查后应以非零码退出。"""
     import sys
 
     monkeypatch.setattr(sys, "argv", ["check_baseline.py", "--root", str(tmp_path)])

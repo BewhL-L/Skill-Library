@@ -33,7 +33,9 @@ import os
 import re
 import subprocess
 import sys
+from collections.abc import Iterator
 from pathlib import Path
+from typing import Optional
 
 SKIP_DIRS = {
     ".git", "node_modules", ".venv", "venv", "dist", "build", "__pycache__",
@@ -44,7 +46,8 @@ FK_COLUMN = re.compile(r"Column\s*\(")
 CONFIG_ASSIGN = re.compile(r"^([A-Z][A-Z0-9_]{2,})\s*[:=]", re.M)
 
 
-def walk_files(root: Path, suffixes=(".py",)):
+def walk_files(root: Path, suffixes: tuple = (".py",)) -> Iterator[Path]:
+    """遍历 root，产出以给定后缀结尾的文件；自动跳过缓存与依赖目录。"""
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
         for name in filenames:
@@ -53,15 +56,16 @@ def walk_files(root: Path, suffixes=(".py",)):
 
 
 def read(path: Path) -> str:
+    """读取文本用于解析；兼容 UTF-8 BOM（否则首行断言会被 BOM 破坏），读不到时返回空串。"""
     try:
-        return path.read_text(encoding="utf-8", errors="ignore")
+        return path.read_text(encoding="utf-8-sig", errors="ignore")
     except OSError:
         return ""
 
 
 # ---------------- 1. schema ----------------
 
-def _migration_base(root: Path):
+def _migration_base(root: Path) -> Optional[Path]:
     """迁移体系可能在仓库根，也可能在 backend/ server/ 这类子目录下"""
     candidates = [root] + [
         p for p in root.iterdir() if p.is_dir() and p.name not in SKIP_DIRS
@@ -73,6 +77,7 @@ def _migration_base(root: Path):
 
 
 def check_schema(root: Path) -> list:
+    """检查迁移体系是否存在、版本文件是否非空，以及应用代码是否绕过迁移直接 create_all。"""
     problems = []
     base = _migration_base(root)
     if base is None:
@@ -104,7 +109,7 @@ def check_schema(root: Path) -> list:
 
 # ---------------- 2. index ----------------
 
-def _column_blocks(text: str):
+def _column_blocks(text: str) -> Iterator[str]:
     """按括号平衡切出 Column(...) 块，避免跨行正则误判"""
     for match in FK_COLUMN.finditer(text):
         depth, i = 0, match.end() - 1
@@ -120,6 +125,7 @@ def _column_blocks(text: str):
 
 
 def check_index(root: Path) -> list:
+    """检查 SQLAlchemy 外键列是否建索引、是否有复合索引声明（仅 Python 栈）。"""
     model_dirs = [root / "app" / "models", root / "models", root / "backend" / "app" / "models"]
     files = [p for d in model_dirs if d.exists() for p in d.rglob("*.py")]
     if not files:
@@ -151,6 +157,7 @@ def check_index(root: Path) -> list:
 # ---------------- 3. ci ----------------
 
 def check_ci(root: Path) -> list:
+    """检查 CI 工作流是否覆盖 lint / test / build，以及测试命令是否误用 console script。"""
     wf_dir = root / ".github" / "workflows"
     workflows = list(wf_dir.glob("*.yml")) + list(wf_dir.glob("*.yaml")) if wf_dir.exists() else []
     if not workflows:
@@ -172,6 +179,7 @@ def check_ci(root: Path) -> list:
 # ---------------- 4. docs ----------------
 
 def check_docs(root: Path) -> list:
+    """检查文档断言脚本是否存在并接进 CI（只在本地跑等于没有）。"""
     candidates = list(root.rglob("check_docs.py"))
     if not candidates:
         return [("warn", "未找到 check_docs.py：文档漂移没有断言")]
@@ -188,6 +196,7 @@ def check_docs(root: Path) -> list:
 # ---------------- 5. private ----------------
 
 def check_private(root: Path) -> list:
+    """检查版本库是否跟踪了 .env、数据库文件、私有文档等敏感内容。"""
     problems = []
     try:
         result = subprocess.run(
@@ -217,6 +226,7 @@ def check_private(root: Path) -> list:
 # ---------------- 6. defaults ----------------
 
 def check_defaults(root: Path) -> list:
+    """检查危险开关的默认值，以及令牌比较是否使用常量时间实现。"""
     config_files = [
         p for p in (
             root / "app" / "config.py", root / "backend" / "app" / "config.py",
@@ -255,6 +265,7 @@ def check_defaults(root: Path) -> list:
 # ---------------- 7. deadconfig ----------------
 
 def check_deadconfig(root: Path) -> list:
+    """检查只定义未使用的配置项与未实现的 TODO/NotImplemented。"""
     config_files = [
         p for p in (
             root / "app" / "config.py", root / "backend" / "app" / "config.py",
@@ -306,6 +317,7 @@ LEVEL_TAG = {"error": "ERROR", "warn": "WARN ", "info": "OK   "}
 
 
 def main() -> int:
+    """命令行入口：逐个运行七项检查，按等级汇总并按需以非零码退出。"""
     parser = argparse.ArgumentParser(
         description="工程底座自检（七项）",
         epilog="适用范围：schema/ci/docs/private 通用；index/defaults/deadconfig 仅 Python 栈，"

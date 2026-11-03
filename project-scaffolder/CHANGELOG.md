@@ -1,6 +1,28 @@
-# Changelog
+﻿# Changelog
 
 本文件记录 project-scaffolder 的所有版本变更。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+
+## v2.3.0 — 2026-11-03
+### 新增
+- 第五步新增「零基础适配」：真新手每章末尾追加动手卡片（目标 / 命令或动作 / 验收清单 / 卡住了），正文补术语首次解释、命令工作目录与预期输出、日志逐行解读。
+- 第六步文档自检新增「零基础可读」；可执行性自检新增「命令实际执行过」；运行时验证新增「文档命令实跑」；工程维度新增「文档漂移检查」（签名/参数/字段名/指标口径以代码为准）。
+- 输出规范新增 3 条：命令规范、示意值规范、零基础规范。
+- 新增「三 Skill 定位卡」：方案 → 项目 → 指南 三行对照，含"不做什么 / 下一步"；完整表见仓库根 `Skill依赖关系图谱.md`。
+- 新增「与 project-processization 的边界」：本 Skill 负责把项目做出来 + 行动指南；已存在的代码要做五轮事实核查与精读指南时交接给对方，避免两处各维护一份学习指南。
+- `references/doc-template.md` 新增「动手卡片」节与 3 组自检项（零基础可读、命令安全、命令实跑）。
+### 变更
+- 修正 SKILL.md 页脚版本与 frontmatter 不一致（v2.2.5 / 2.2.6 → v2.3.0），最后更新改为 2026-11-03。
+- `README.md` 同步：12 维表补第 12 维（工程底座与文档一致性）；触发词去掉"帮我规划"并指向方案层/指南层；七要素后补零基础动手卡片说明。
+### 背景
+- 2026-11-03 企业级 RAG 项目实战：单份"专家版"指南对完全新手过密；补齐精讲版与动手卡片后，又通过多轮审核发现 `.env` 覆盖、`grep` 命中注释、venv 路径顺序、healthy 口径、示例数字冒充实测等问题，沉淀为本轮规则。
+
+## v2.2.6 — 2026-11-02
+### 修复
+- `scripts/check_baseline.py` 读取统一改用 `utf-8-sig`：带 BOM 的 `config.py` / workflow 会让 `^[A-Z_]` 类正则与首行判断失准，表现为"配置项读不到""workflow 未覆盖 lint"这类假阴性。
+### 改进
+- 补 9 个函数的 docstring、2 个返回注解（`Iterator[Path]`、`Optional[Path]`），检查逻辑一行未改。
+### 新增
+- `pyproject.toml`（pytest + ruff 配置）、`.coveragerc`、`Makefile`（`test` / `lint` / `fmt` / `baseline`）、`.pre-commit-config.yaml`（ruff + 通用钩子）。
 
 ## v2.2.5 — 2026-11-02
 ### 新增

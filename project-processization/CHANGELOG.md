@@ -2,6 +2,30 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 与 Keep a Changelog 规范。
 
+## v1.2.0 — 2026-11-03
+### 新增
+- `references/06-零基础精讲版规范.md`：第三产物《零基础精讲版》的 11 章结构（0-10）、七条写作规则、动手卡片模板（目标/命令/验收/卡住了）、12 项命令审查清单、四轮审核清单、10 个高频坑。
+- SKILL.md 顶部新增「第三产物：零基础精讲版（按需，但真新手必做）」：明确主指南与精讲版的分工，避免把"专家版"直接丢给完全新手。
+- 新增「三 Skill 定位卡」：方案 → 项目 → 指南 三行对照，含"不做什么 / 下一步"；完整表见仓库根 `Skill依赖关系图谱.md`。
+- 第 4 轮补「零基础可读性」与「命令实跑」：术语首次解释、命令标工作目录与预期输出、日志逐行解读、覆盖式 `cp .env` 的风险、`python`/`python3` 上下文、无 healthcheck 只能写 `Up`。
+- 输出规范新增 3 条（零基础可读、命令安全、示意值标注），交付清单新增 4 项。
+### 修复
+- `QUICKSTART.md` 第 3 步原写"把 `learning-guide-template.md` 复制到项目 `README.md` 末尾"，与"私密指南不得进 README"的铁律直接冲突；改为分别写公开 README 与仓库外私密指南，并补零基础分支。
+- SKILL.md 第 5 轮的校验命令原对 `README.md` 跑 `validate_md --require-frontmatter` 并生成指南目录；改为私密指南与 README 分别校验，README 只跑零删减比对。
+### 变更
+- 修正「五条核心原则」标题与实际 6 条不符的问题。
+- SKILL.md 页脚版本 v1.1.4 → v1.2.0（与 CHANGELOG 对齐）。
+- `templates/learning-guide-template.md` 顶部增加"零基础另起精讲版"的分支说明。
+### 背景
+- 2026-11-03 企业级 RAG 项目实战：单份"专家版"指南对完全新手仍然过密；补齐精讲版后，又通过多轮审核发现 `.env` 覆盖、`grep` 命中注释、venv 路径顺序、healthy 口径等 10 类可复现问题，沉淀为本规范。
+
+## v1.1.5 — 2026-11-02
+### 修复
+- `scripts/validate_md.py`、`scripts/check_docs.py` 读取统一改用 `utf-8-sig`。Windows 上带 BOM 的 Markdown 会让 `---` 开头的 frontmatter 校验误报「缺少 YAML frontmatter」，`ast.parse` 也会因 BOM 直接 `SyntaxError`——测试计数静默归零。
+- `scripts/make_toc.py` 读取兼容 BOM，写回时按原文件状态决定是否保留 BOM，避免"只加了个目录，整个文件却显示被重写"。
+### 验证
+- 构造带 BOM 的 md：`validate_md.py` 结构校验通过；`make_toc.py --write` 插入目录后 BOM 仍在、内容正确。
+
 ## v1.1.4 — 2026-11-02
 ### 新增
 - 05 第 1 节新增**第三类漂移：部署态**——改了源码但 agent 加载的仍是独立副本，两边各自"看起来都正常"。解法：安装位指向源码（junction / `ln -sfn`），交付前检查"安装位是不是链接"。

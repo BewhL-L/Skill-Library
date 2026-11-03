@@ -13,6 +13,8 @@
 - **可交付**：项目有明确的验收标准和可演示的最终产物，不是半成品
 - **梯度递进**：项目分阶段实现，每阶段有独立可运行的产物和验收点
 - **生产规范**：代码结构、命名、注释、错误处理符合生产环境标准，不是玩具代码
+- **分工显式**：每个阶段标注"AI 可代劳 / 你必须亲手"，不把核心练习外包给 AI
+- **零基础可读**：术语首次解释、命令标工作目录与预期输出、每阶段末尾一张动手卡片
 
 ---
 
@@ -26,12 +28,12 @@
 
 ```
 project-based-learning/
-├── SKILL.md                    # 核心：原则 / 8 部分 / 工作流 / 输出规范 / 质量清单
+├── SKILL.md                    # 核心：原则 / 8 部分 / 工作流 / 工程实践基线 / 输出规范 / 质量清单 / 四轮自检
 ├── README.md                   # 项目首页（本文件）
 ├── QUICKSTART.md               # 三分钟上手：最短输入与产出
 ├── API.md                      # 输入/输出契约、边界、失败降级、下游接口
 ├── ARCHITECTURE.md             # 分层、决策流、为什么无脚本、扩展点
-├── TESTING.md                  # 对生成物的 5 条可执行抽查
+├── TESTING.md                  # 对生成物的 7 条可执行抽查
 ├── DEBUGGING.md                # 方案"不好用"的症状与修法
 ├── INSTALLATION.md             # 安装（复制 / junction）、升级、卸载
 ├── FAQ.md                      # 7 个高频问题
@@ -42,7 +44,7 @@ project-based-learning/
 ├── LICENSE
 ├── examples/
 │   ├── plan-skeleton-rag.md    # RAG 方案骨架节选（标定颗粒度）
-│   └── bad-vs-good.md          # 6 组差/好对照
+│   └── bad-vs-good.md          # 8 组差/好对照
 └── references/
     ├── project-templates.md            # 8 大部分逐段模板
     └── project-types-and-templates.md  # 8 类项目需求模板与覆盖矩阵
@@ -52,7 +54,7 @@ project-based-learning/
 
 ## 版本信息
 
-- **当前版本**：v1.0.3
+- **当前版本**：v1.1.0
 - **最后更新**：2026-11-03
 - **基于**：skill-optimizer 25 轮优化方法论 + skill-creator-for-work 规范
 

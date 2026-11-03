@@ -578,6 +578,6 @@ python skill-opt.py info
 
 > **最后更新**：2026-11-02
 >
-> **版本**：v1.9.2
+> **版本**：v1.9.4
 >
 > **基于**：obsidian-knowledge-base-creator 25 轮优化实战经验 + 多类型 Skill 自适应优化 + 批量优化与对比报告

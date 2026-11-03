@@ -26,6 +26,29 @@ except ImportError:
     SkillTypeDetector = None
 
 
+SKIP_DIR_NAMES = {".venv", "venv", "__pycache__", "node_modules", ".git", ".pytest_cache"}
+TEST_DIR_NAMES = {"tests", "test", "__tests__"}
+
+
+def iter_source_files(root: Path) -> List[Path]:
+    """列出参与评分的 Python 源文件。
+
+    跳过依赖/缓存目录与测试目录：测试代码的注解与 docstring 不应计入
+    "源码质量"，否则同一个技能会因为测试写得简略而掉分。
+    """
+    files: List[Path] = []
+    for path in root.rglob("*.py"):
+        parts = path.relative_to(root).parts
+        if any(part in SKIP_DIR_NAMES for part in parts[:-1]):
+            continue
+        if any(part in TEST_DIR_NAMES for part in parts[:-1]):
+            continue
+        if path.name.startswith("test_") or path.name.endswith("_test.py"):
+            continue
+        files.append(path)
+    return files
+
+
 class SkillAuditor:
     """Skill 健康检查器"""
 
@@ -289,7 +312,7 @@ class SkillAuditor:
         score = 100
         issues = []
 
-        py_files = list(self.skill_path.rglob("*.py"))
+        py_files = iter_source_files(self.skill_path)
         if not py_files:
             score -= 50
             issues.append({"severity": "high", "message": "未找到 Python 脚本文件"})
@@ -471,19 +494,18 @@ class SkillAuditor:
         score = 100
         issues = []
 
-        # 检查帮助信息
-        py_files = list(self.skill_path.rglob("*.py"))
+        # 检查帮助信息（扫描全部源文件：只检查第一个会因文件顺序产生误判）
+        py_files = iter_source_files(self.skill_path)
         has_help = False
         has_argparse = False
         for py_file in py_files:
-            if any(part in [".venv", "venv", "__pycache__"] for part in py_file.parts):
-                continue
             content = py_file.read_text(encoding="utf-8-sig", errors="ignore")
             if "--help" in content or "add_argument" in content:
                 has_help = True
             if "argparse" in content:
                 has_argparse = True
-            break
+            if has_help and has_argparse:
+                break
 
         if not has_argparse:
             score -= 20
@@ -875,7 +897,7 @@ class SkillAuditor:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Skill 健康检查工具 v1.8.0（支持多类型 Skill 自适应评估）")
+    parser = argparse.ArgumentParser(description="Skill 健康检查工具 v1.9.4（支持多类型 Skill 自适应评估）")
     parser.add_argument("--path", required=True, help="Skill 目录路径")
     parser.add_argument("--format", choices=["text", "json"], default="text", help="输出格式")
     parser.add_argument("--output", help="输出文件路径（JSON 格式时使用）")

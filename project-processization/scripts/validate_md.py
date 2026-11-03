@@ -153,7 +153,7 @@ def check_wikilinks(body: str) -> List[Dict[str, Any]]:
 
 def validate(path: Path, require_frontmatter: bool) -> Dict[str, Any]:
     """执行全部校验，返回结构化结果。"""
-    text = path.read_text(encoding="utf-8", errors="ignore")
+    text = path.read_text(encoding="utf-8-sig", errors="ignore")
     frontmatter, body = split_frontmatter(text)
     headings = collect_headings(body)
     issues: List[Dict[str, Any]] = []

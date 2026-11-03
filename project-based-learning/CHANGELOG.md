@@ -7,6 +7,29 @@
 
 ---
 
+## [v1.0.3] - 2026-11-03
+
+### 新增
+
+- **文档体系补齐**（此前只有 SKILL.md + 3 份 references，缺快速上手与运维类文档）：
+  `QUICKSTART.md`（最短输入、你会拿到什么、三个别指望）、`API.md`（输入/输出契约、边界、失败降级、下游接口）、`ARCHITECTURE.md`（分层、决策流、为什么无脚本、扩展点）、`TESTING.md`（5 条可执行抽查 + 抽样验证）、`DEBUGGING.md`（症状表、三种"假合格"、部分占比诊断）、`INSTALLATION.md`（放置、junction 建链、升级）、`SECURITY.md`（脱敏三类输入、公开/私密分级）、`CONTRIBUTING.md`（一处改三处同步）、`CODE_OF_CONDUCT.md`、`LICENSE`。
+- `examples/`：`plan-skeleton-rag.md`（8 部分各取一段，标定颗粒度）、`bad-vs-good.md`（6 组差/好对照：验收、选型、扩展、阶段产物、双链、难度周期）。
+
+### 变更
+
+- `references/faq.md` → 根目录 `FAQ.md`：与 SKILL.md「常见问题」节的链接同步更新，避免同一份内容两处存放。
+- frontmatter 增加 `version: 1.0.3`，与页脚一致。
+
+### 说明
+
+- 8 大部分结构未变；两份模板的规则与示例内容未改，仅在 `references/project-templates.md` 第 6 节加了一行提示（见下「修正」）。
+
+### 修正（多轮自检）
+
+- `references/project-templates.md` 六、验收标准：原示例是"所有 P0 功能正常运行""无明显卡顿"这类不可判定措辞，与 SKILL.md「工程实践基线」第 1 条（命令 + 期望输出）冲突。补一行说明：代码块只示范结构，措辞须按基线改写，并指向 `examples/bad-vs-good.md`。
+- 「输出规范」第 5 条与质量清单对应项：原写"代码示例必须可运行"，易被读成"交付完整项目代码"，与定位卡"不生成代码"冲突。改为"代码片段可运行、只给关键片段，要完整工程用 `project-scaffolder`"。
+- 本 Skill 为纯文档型，无脚本，`TESTING.md` 的"测试"指对**生成物**的抽查，不是单元测试。
+
 ## [v1.0.2] - 2026-11-03
 
 ### 新增

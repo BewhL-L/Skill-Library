@@ -26,22 +26,34 @@
 
 ```
 project-based-learning/
-├── SKILL.md                          # 核心文档（功能说明/使用流程/输出规范）
-├── README.md                         # 项目首页（本文件）
-├── CHANGELOG.md                      # 版本变更记录
-├── .gitignore                        # Git 忽略配置
-├── .editorconfig                     # 编辑器配置
-```└── references/
-    └── faq.md
-    └── project-templates.md
-    └── project-types-and-templates.md
+├── SKILL.md                    # 核心：原则 / 8 部分 / 工作流 / 输出规范 / 质量清单
+├── README.md                   # 项目首页（本文件）
+├── QUICKSTART.md               # 三分钟上手：最短输入与产出
+├── API.md                      # 输入/输出契约、边界、失败降级、下游接口
+├── ARCHITECTURE.md             # 分层、决策流、为什么无脚本、扩展点
+├── TESTING.md                  # 对生成物的 5 条可执行抽查
+├── DEBUGGING.md                # 方案"不好用"的症状与修法
+├── INSTALLATION.md             # 安装（复制 / junction）、升级、卸载
+├── FAQ.md                      # 7 个高频问题
+├── SECURITY.md                 # 输入脱敏、公开/私密分级
+├── CONTRIBUTING.md             # 一处改、三处同步的维护约定
+├── CODE_OF_CONDUCT.md
+├── CHANGELOG.md
+├── LICENSE
+├── examples/
+│   ├── plan-skeleton-rag.md    # RAG 方案骨架节选（标定颗粒度）
+│   └── bad-vs-good.md          # 6 组差/好对照
+└── references/
+    ├── project-templates.md            # 8 大部分逐段模板
+    └── project-types-and-templates.md  # 8 类项目需求模板与覆盖矩阵
+```
 
 ---
 
 ## 版本信息
 
-- **当前版本**：v1.0.0
-- **最后更新**：2026-08-31
+- **当前版本**：v1.0.3
+- **最后更新**：2026-11-03
 - **基于**：skill-optimizer 25 轮优化方法论 + skill-creator-for-work 规范
 
 ---

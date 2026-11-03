@@ -134,6 +134,8 @@ tracked = subprocess.run(["git", "ls-files"], ...).stdout.splitlines()
 
 **禁止 `git add -A`**：它是私有文档误入仓库的头号入口。提交前先 `git status --short`。
 
+**提交粒度**：一个模块一条提交（`feat(retrieval): …` / `chore(deploy): …`），不要攒一周的改动压成一条 `init`。判断标准是"这条能不能单独 revert、单独讲清楚"——不能，就该拆。
+
 **从约定到闸门**：`.gitignore` 与"提交前看一眼 status"都依赖人记得——漏一次就是 2026-10-27 那种事故。给仓库装 `secret-gate` 技能的 pre-commit 钩子（`bash <skill-dir>/secret-gate/scripts/install-hook.sh .`），`.env`、私钥块、`user:pass@host` 形式的内嵌凭据会在提交那一刻被直接拒绝，工作区文件原样保留。把"禁止 `git add -A`"从口号变成可执行的检查。
 
 验收：`git ls-files | grep 私有文件名` 无输出；CI 里有对应断言。闸门验收：暂存一个假密钥（运行时拼接的 `sk-` 加 30 个字符），`git commit` 必须红。

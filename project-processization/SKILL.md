@@ -1,7 +1,7 @@
 ﻿---
 title: 项目流程化：AI 协作学习指南生成
 name: project-processization
-version: 1.2.0
+version: 1.2.1
 description: 把 AI 已生成/搭好骨架的软件项目，转化为"零基础到专家级"的 AI 协作学习指南。当用户需要：(1) 为 AI 生成的全栈项目补一份从入门到精通、能动手能面试的学习路线/学习指南；(2) 明确区分"AI 已完成部分如何利用"与"用户必须亲手完成部分该怎么完成"；(3) 在不删减原 README 一个字的前提下扩写项目说明、学习排期、源码精读路线、评测与验收清单；(4) 对项目文档做事实核查（行数/测试数/组件数/依赖/服务必须可追溯）、Markdown 结构校验、原文零删减比对、生成可点击目录；(5) 区分公开 README 与私密学习指南、把文档一致性做成 CI 断言时使用。支持 Python / FastAPI / Vue3 / TypeScript / Java / Node 等任意技术栈，输出标准化 Markdown（Frontmatter + 折叠目录 + Mermaid + Obsidian callout）。项目尚未生成时先用 project-scaffolder；只要方案、不要项目时用 project-based-learning。
 ---
 
@@ -195,9 +195,10 @@ python scripts/scan_project_facts.py --path <项目根> --group-depth 2 \
 - 不混用多个统计脚本的数字；同一文档的规模数字以同一次扫描为准。
 - **不把学习指南写进项目 README**：它含"AI 已完成 / 你必须亲手做"的分工，只进仓库外的私密文档。
 - 不用 `git add -A` 盲加；提交前先看 `git status`，并用 `check_docs.py` 确认无私有文件被跟踪。
+- 不把私有边界只写成"记得别提交"：装 `secret-gate` 的 `pre-commit` 闸门（若已安装），`.env` / 私钥 / 内嵌凭据在 `git commit` 那一刻被拒——约定靠人记，闸门不靠。
 
 ---
 
-> 版本：v1.2.0
+> 版本：v1.2.1
 > 产物语言：与项目/用户语言一致（默认简体中文）
 > 配套工具：scripts/ 下 5 个纯标准库 CLI（Python 3.8+）
